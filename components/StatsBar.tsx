@@ -42,7 +42,7 @@ export default function StatsBar({ stats }: { stats: Stat[] }) {
               transition={{ delay: i * 0.1 }}
               className="flex flex-col items-center text-center"
             >
-              <div className="text-forest text-5xl lg:text-6xl font-display font-black tracking-tighter mb-3">
+              <div className="text-forest text-5xl lg:text-6xl font-display font-bold tracking-tighter mb-3">
                 <Counter value={stat.target} decimals={stat.decimals || 0} />
                 {stat.suffix}
               </div>

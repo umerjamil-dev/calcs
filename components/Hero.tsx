@@ -56,13 +56,13 @@ export default function Hero({ stats }: { stats: any[] }) {
           transition={{ delay: 0.1 }}
           className="flex flex-col mb-10"
         >
-          <h1 className="text-white text-5xl sm:text-6xl lg:text-8xl font-display font-black leading-[1.05] tracking-tight">
+          <h1 className="text-white text-5xl sm:text-6xl lg:text-8xl font-display font-bold leading-[1.05] tracking-tight">
             Your Body.
           </h1>
-          <h1 className="bg-gradient-to-r from-mint via-mint-light to-sky bg-clip-text text-transparent italic text-5xl sm:text-6xl lg:text-8xl font-display font-black leading-[1.05] tracking-tight">
+          <h1 className="bg-gradient-to-r from-mint via-mint-light to-sky bg-clip-text text-transparent text-5xl sm:text-6xl lg:text-8xl font-display font-bold leading-[1.05] tracking-tight">
             Your Numbers.
           </h1>
-          <h1 className="text-white text-5xl sm:text-6xl lg:text-8xl font-display font-black leading-[1.05] tracking-tight">
+          <h1 className="text-white text-5xl sm:text-6xl lg:text-8xl font-display font-bold leading-[1.05] tracking-tight">
             Your Health.
           </h1>
         </motion.div>
@@ -102,7 +102,7 @@ export default function Hero({ stats }: { stats: any[] }) {
         >
           {stats.map((stat, i) => (
             <div key={i} className="flex flex-col items-center lg:items-start text-center lg:text-left">
-              <span className="text-white text-4xl lg:text-5xl font-display font-black mb-1 tracking-tighter">
+              <span className="text-white text-4xl lg:text-5xl font-display font-bold mb-1 tracking-tighter">
                 <Counter value={stat.target} decimals={stat.decimals || 0} />
                 {stat.suffix}
               </span>
