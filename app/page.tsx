@@ -9,7 +9,6 @@ import BlogSection from '@/components/BlogSection';
 import WhySection from '@/components/WhySection';
 import PopularTools from '@/components/PopularTools';
 import Footer from '@/components/Footer';
-import AdSlot from '@/components/AdSlot';
 
 export default function Home() {
   const stats = [
@@ -117,13 +116,10 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-x-hidden">
       <Hero stats={stats} />
-      <AdSlot type="horizontal" className="pt-12" />
       <CalculatorGrid tools={tools} />
-      <AdSlot type="horizontal" />
       <WhySection />
       <BlogSection />
       <PopularTools />
-      <AdSlot type="horizontal" className="pb-12" />
       <Footer />
     </main>
   );

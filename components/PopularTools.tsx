@@ -75,6 +75,11 @@ export default function PopularTools() {
 
         </div>
       </div>
+       <div className="mt-16 text-center">
+          <Link href="/calculators" className="inline-flex items-center gap-3 bg-forest text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all">
+            View All 25 Calculators <Activity className="w-5 h-5 text-mint" />
+          </Link>
+        </div>
     </section>
   );
 }
