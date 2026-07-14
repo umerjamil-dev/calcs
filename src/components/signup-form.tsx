@@ -44,7 +44,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
           </div>
           <div className="text-center">
             <h1 className="text-xl font-semibold tracking-tight text-foreground">
-              Create your account
+             Retalier Create Your Account
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               Register your company to get started

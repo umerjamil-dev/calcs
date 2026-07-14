@@ -50,8 +50,19 @@ const Signup = () => {
       </div>
 
       {/* Right form panel */}
-      <div className="flex w-full items-center justify-center p-6 lg:w-1/2">
+      <div className="flex w-full flex-col items-center justify-center p-6 lg:w-1/2">
         <SignupForm className="w-full max-w-2xl" />
+        <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+          Are you a
+          <a href="/distributor/signup" className="font-semibold text-primary-main underline-offset-4 hover:underline">
+            Distributor
+          </a>
+          or
+          <a href="/admin/login" className="font-semibold text-primary-main underline-offset-4 hover:underline">
+            Admin
+          </a>
+          ?
+        </div>
       </div>
     </div>
   )
