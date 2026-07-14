@@ -6,37 +6,67 @@ const Login = () => {
     <div className="flex min-h-screen w-full bg-white">
       {/* Left brand panel */}
       <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-primary-main p-12 lg:flex">
-        {/* Decorative circles */}
-        <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/5" />
-        <div className="absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-white/5" />
-        <div className="absolute right-10 bottom-20 h-40 w-40 rounded-full bg-secondary-main/10" />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-main via-primary-main to-primary-700" />
+
+        {/* Decorative shapes */}
+        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/5" />
+        <div className="absolute -bottom-40 -left-20 h-96 w-96 rounded-full bg-white/5" />
+        <div className="absolute right-12 top-1/3 h-32 w-32 rounded-full bg-secondary-main/15 blur-2xl" />
+        <div className="absolute left-1/4 bottom-1/4 h-24 w-24 rounded-2xl rotate-12 bg-white/5" />
 
         {/* Logo */}
-        <div className="relative z-10">
+        <div className="relative z-10 flex items-center gap-3">
           <img src={logo} alt="Mal Pakistan" className="h-14 object-contain brightness-0 invert" />
+          <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white/80">Retailer Portal</span>
         </div>
 
-        {/* Tagline */}
-        <div className="relative z-10 space-y-6">
-          <h2 className="text-3xl font-bold leading-tight text-white">
-            Pakistan's trusted<br />fuel distribution<br />network
-          </h2>
-          <p className="max-w-sm text-sm leading-relaxed text-white/70">
-            Streamlined order placement, real-time delivery tracking, and seamless
-            commercial settlement — all in one platform.
-          </p>
-          <div className="flex gap-6 pt-4">
-            <div>
-              <p className="text-2xl font-bold text-white">500+</p>
-              <p className="text-xs text-white/60">Forecourts</p>
-            </div>
-            <div className="border-l border-white/20 pl-6">
-              <p className="text-2xl font-bold text-white">50+</p>
-              <p className="text-xs text-white/60">Distributors</p>
-            </div>
-            <div className="border-l border-white/20 pl-6">
-              <p className="text-2xl font-bold text-white">30</p>
-              <p className="text-xs text-white/60">Days Credit</p>
+        {/* Tagline + Features */}
+        <div className="relative z-10 space-y-8">
+          <div className="space-y-4">
+            <h2 className="text-4xl font-bold leading-tight text-white">
+              Pakistan's trusted<br />fuel distribution<br />network
+            </h2>
+            <p className="max-w-md text-sm leading-relaxed text-white/70">
+              Streamlined order placement, real-time delivery tracking, and seamless
+              commercial settlement — all in one platform.
+            </p>
+          </div>
+
+          {/* Feature list */}
+          <ul className="space-y-3">
+            {[
+              'Direct order placement',
+              '30-day credit facility',
+              'Real-time delivery tracking',
+              'Digital proof of delivery',
+            ].map((item) => (
+              <li key={item} className="flex items-center gap-3 text-sm text-white/80">
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15">
+                  <svg className="h-3.5 w-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          {/* Stats card */}
+          <div className="rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-white">500+</p>
+                <p className="text-xs text-white/50">Forecourts</p>
+              </div>
+              <div className="border-l border-white/15 text-center">
+                <p className="text-2xl font-bold text-white">50+</p>
+                <p className="text-xs text-white/50">Distributors</p>
+              </div>
+              <div className="border-l border-white/15 text-center">
+                <p className="text-2xl font-bold text-white">30</p>
+                <p className="text-xs text-white/50">Days Credit</p>
+              </div>
             </div>
           </div>
         </div>
