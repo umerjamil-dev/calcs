@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { Login, Signup } from '../pages/Auth'
-import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor, AdminOrders, AdminNewOrders, AdminAssignedOrders, AdminProcessingOrders, AdminShippedOrders, AdminDeliveredOrders, AdminCancelledOrders, AdminOrderDetail } from '../pages/Admin'
+import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor, AdminOrders, AdminNewOrders, AdminAssignedOrders, AdminProcessingOrders, AdminShippedOrders, AdminDeliveredOrders, AdminCancelledOrders, AdminOrderDetail, AdminReceivePayment, AdminPaymentHistory, AdminOutstandingBalance } from '../pages/Admin'
 import { DistributorLogin, DistributorRequest } from '../pages/Distributor'
 
 const Router = () => {
@@ -33,6 +33,9 @@ const Router = () => {
       <Route path='/admin/orders/delivered' element={<AdminDeliveredOrders />} />
       <Route path='/admin/orders/cancelled' element={<AdminCancelledOrders />} />
       <Route path='/admin/orders/:id' element={<AdminOrderDetail />} />
+      <Route path='/admin/payments/receive' element={<AdminReceivePayment />} />
+      <Route path='/admin/payments/history' element={<AdminPaymentHistory />} />
+      <Route path='/admin/payments/outstanding' element={<AdminOutstandingBalance />} />
 
       {/* Distributor */}
       <Route path='/distributor/login' element={<DistributorLogin />} />

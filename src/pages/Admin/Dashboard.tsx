@@ -4,15 +4,19 @@ import { Bell, CalendarDays, Package, ShoppingCart, Users, Truck, CreditCard, Wa
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { useDashboardStore } from '@/stores/useDashboardStore'
+import { useOrderStore } from '@/stores/useOrderStore'
 
 const AdminDashboard = () => {
   const navigate = useNavigate()
   const { stats, loading, fetchStats } = useDashboardStore()
+  const { orders: recentOrders, users, fetchOrders, fetchUsers, getUserById } = useOrderStore()
   const user = JSON.parse(localStorage.getItem('user') || '{}')
 
   useEffect(() => {
     fetchStats()
-  }, [fetchStats])
+    fetchOrders()
+    if (users.length === 0) fetchUsers()
+  }, [fetchStats, fetchOrders, fetchUsers, users.length])
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -179,6 +183,53 @@ const AdminDashboard = () => {
               </div>
             </section>
           </div>
+
+          {/* Recent Orders */}
+          <section className="mt-6">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Recent Orders</h2>
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+                    <tr>
+                      <th className="px-5 py-3 font-medium">Order No</th>
+                      <th className="px-5 py-3 font-medium">Retailer</th>
+                      <th className="px-5 py-3 font-medium">Distributor</th>
+                      <th className="px-5 py-3 font-medium">Amount</th>
+                      <th className="px-5 py-3 font-medium">Status</th>
+                      <th className="px-5 py-3 font-medium">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {recentOrders.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-5 py-8 text-center text-slate-500">No recent orders</td>
+                      </tr>
+                    ) : (
+                      recentOrders.slice(0, 5).map((o) => {
+                        const retailer = getUserById(o.user_id)
+                        const distributor = getUserById(o.distributor_id)
+                        return (
+                          <tr key={o.id} className="transition-colors hover:bg-slate-50/50">
+                            <td className="px-5 py-3 font-medium text-slate-800">{o.order_number}</td>
+                            <td className="px-5 py-3 text-slate-600">{retailer?.name || `User #${o.user_id}`}</td>
+                            <td className="px-5 py-3 text-slate-600">{distributor?.name || `User #${o.distributor_id}`}</td>
+                            <td className="px-5 py-3 font-medium text-slate-800">Rs {Number(o.total_amount).toLocaleString('en-PK')}</td>
+                            <td className="px-5 py-3">
+                              <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium capitalize text-slate-700">
+                                {o.status}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3 text-slate-500">{new Date(o.order_date).toLocaleDateString('en-PK')}</td>
+                          </tr>
+                        )
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
         </main>
       </div>
     </div>
