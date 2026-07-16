@@ -47,21 +47,24 @@ const AdminDistributors = () => {
               <table className="w-full text-left text-sm">
                 <thead className="bg-slate-50 text-xs uppercase text-slate-500">
                   <tr>
+                    <th className="px-5 py-3 font-medium">#No</th>
                     <th className="px-5 py-3 font-medium">Name</th>
                     <th className="px-5 py-3 font-medium">Phone</th>
                     <th className="px-5 py-3 font-medium">Email</th>
-                    <th className="px-5 py-3 font-medium">Company</th>
+                    <th className="px-5 py-3 font-medium">Address</th>
+                    <th className="px-5 py-3 font-medium">Status</th>
+
                     <th className="px-5 py-3 font-medium text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {loading ? (
                     <tr>
-                      <td colSpan={5} className="px-5 py-8 text-center text-slate-500">Loading distributors...</td>
+                      <td colSpan={7} className="px-5 py-8 text-center text-slate-500">Loading distributors...</td>
                     </tr>
                   ) : distributors.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-5 py-12 text-center">
+                      <td colSpan={7} className="px-5 py-12 text-center">
                         <div className="flex flex-col items-center justify-center text-slate-400">
                           <Truck size={40} className="mb-2" />
                           <p className="text-sm">No distributors found</p>
@@ -72,12 +75,18 @@ const AdminDistributors = () => {
                       </td>
                     </tr>
                   ) : (
-                    distributors.map((d) => (
+                    distributors.map((d, index) => (
                       <tr key={d.id} className="transition-colors hover:bg-slate-50/50">
+                        <td className="px-5 py-3 text-slate-500">{index + 1}</td>
                         <td className="px-5 py-3 font-medium text-slate-800">{d.name}</td>
                         <td className="px-5 py-3 text-slate-600">{d.number}</td>
                         <td className="px-5 py-3 text-slate-600">{d.email}</td>
-                        <td className="px-5 py-3 text-slate-600">{d.company_name || '-'}</td>
+                        <td className="px-5 py-3 text-slate-600">{d.address || '-'}</td>
+                        <td className="px-5 py-3">
+                          <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${d.status ? 'bg-green-50 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
+                            {d.status ? 'Active' : 'Inactive'}
+                          </span>
+                        </td>
                         <td className="px-5 py-3 text-right">
                           <button
                             type="button"

@@ -9,6 +9,7 @@ export interface Distributor {
   email: string
   address: string
   company_name: string | null
+  status:number
   nic: string | null
   role_id: number
 }

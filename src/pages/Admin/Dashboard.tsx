@@ -1,11 +1,18 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, CalendarDays, TrendingUp, TrendingDown, Package, ShoppingCart, Users, Truck, CreditCard, Wallet, ArrowUpRight } from 'lucide-react'
+import { Bell, CalendarDays, Package, ShoppingCart, Users, Truck, CreditCard, Wallet, ArrowUpRight } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
+import { useDashboardStore } from '@/stores/useDashboardStore'
 
 const AdminDashboard = () => {
   const navigate = useNavigate()
+  const { stats, loading, fetchStats } = useDashboardStore()
   const user = JSON.parse(localStorage.getItem('user') || '{}')
+
+  useEffect(() => {
+    fetchStats()
+  }, [fetchStats])
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -13,34 +20,28 @@ const AdminDashboard = () => {
     navigate('/admin/login')
   }
 
+  const formatMoney = (value: number) => `Rs ${value.toLocaleString('en-PK')}`
+
   const overview = [
-    { label: 'Total Retailers', value: '520', change: '+12%', up: true, icon: Users },
-    { label: 'Total Distributors', value: '54', change: '+5%', up: true, icon: Truck },
-    { label: 'Total Products', value: '128', change: '+8%', up: true, icon: Package },
-    { label: 'Total Orders', value: '1,245', change: '-2%', up: false, icon: ShoppingCart },
+    { label: 'Total Retailers', value: stats.total_retailers, icon: Users },
+    { label: 'Total Distributors', value: stats.total_distributors, icon: Truck },
+    { label: 'Total Products', value: stats.total_products, icon: Package },
+    { label: 'Total Orders', value: stats.total_orders, icon: ShoppingCart },
   ]
 
   const orders = [
-    { label: 'Pending', value: 24, total: 1245 },
-    { label: 'Confirmed', value: 86, total: 1245 },
-    { label: 'Processing', value: 42, total: 1245 },
-    { label: 'Shipped', value: 38, total: 1245 },
-    { label: 'Delivered', value: 1050, total: 1245 },
-    { label: 'Cancelled', value: 12, total: 1245 },
+    { label: 'Pending', value: stats.pending_orders },
+    { label: 'Confirmed', value: stats.confirm_orders },
+    { label: 'Processing', value: stats.processing_orders },
+    { label: 'Shipped', value: stats.shipped_orders },
+    { label: 'Delivered', value: stats.delivered_orders },
+    { label: 'Cancelled', value: stats.cancelled_orders },
   ]
 
   const financials = [
-    { label: 'Total Sales', value: 'Rs 4.2M', icon: Wallet },
-    { label: 'Total Payments', value: 'Rs 3.8M', icon: CreditCard },
-    { label: "Today's Orders", value: '47', icon: ShoppingCart },
-  ]
-
-  const recent = [
-    { id: '#ORD-4521', retailer: 'Ali Petroleum', amount: 'Rs 85,000', status: 'Delivered', date: 'Today, 10:23 AM' },
-    { id: '#ORD-4520', retailer: 'Karachi Fuels', amount: 'Rs 142,000', status: 'Shipped', date: 'Today, 09:15 AM' },
-    { id: '#ORD-4519', retailer: 'Lahore Gas Station', amount: 'Rs 67,500', status: 'Processing', date: 'Yesterday' },
-    { id: '#ORD-4518', retailer: 'Multan Traders', amount: 'Rs 210,000', status: 'Pending', date: 'Yesterday' },
-    { id: '#ORD-4517', retailer: 'Faisalabad Fuels', amount: 'Rs 95,000', status: 'Cancelled', date: '2 days ago' },
+    { label: 'Total Sales', value: formatMoney(stats.total_sales), icon: Wallet },
+    { label: 'Total Payments', value: formatMoney(stats.total_payments), icon: CreditCard },
+    { label: "Today's Orders", value: stats.today_orders, icon: ShoppingCart },
   ]
 
   const quickActions = [
@@ -49,17 +50,6 @@ const AdminDashboard = () => {
     { label: 'Add Distributor', path: '/admin/distributors/add' },
     { label: 'Receive Payment', path: '/admin/payments/receive' },
   ]
-
-  const statusClass = (status: string) => {
-    switch (status) {
-      case 'Delivered': return 'bg-slate-100 text-slate-700'
-      case 'Shipped': return 'bg-slate-100 text-slate-700'
-      case 'Processing': return 'bg-slate-100 text-slate-700'
-      case 'Pending': return 'bg-slate-100 text-slate-700'
-      case 'Cancelled': return 'bg-red-50 text-red-700'
-      default: return 'bg-slate-100 text-slate-700'
-    }
-  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -122,28 +112,28 @@ const AdminDashboard = () => {
           {/* Overview */}
           <section className="mb-6">
             <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Overview</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {overview.map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-xs font-medium text-slate-500">{item.label}</p>
-                      <p className="mt-1 text-2xl font-bold text-slate-800">{item.value}</p>
-                      <div className={`mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${item.up ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
-                        {item.up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                        {item.change} this month
+            {loading ? (
+              <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">Loading dashboard...</div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {overview.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-xs font-medium text-slate-500">{item.label}</p>
+                        <p className="mt-1 text-2xl font-bold text-slate-800">{item.value.toLocaleString('en-PK')}</p>
+                      </div>
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+                        <item.icon size={20} />
                       </div>
                     </div>
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
-                      <item.icon size={20} />
-                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </section>
 
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
@@ -152,18 +142,21 @@ const AdminDashboard = () => {
               <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">Order Status</h2>
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                  {orders.map((o) => (
-                    <div key={o.label} className="rounded-xl border border-slate-100 bg-slate-50/50 p-4">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-slate-600">{o.label}</p>
-                        <span className="text-xs text-slate-400">{Math.round((o.value / o.total) * 100)}%</span>
+                  {orders.map((o) => {
+                    const percent = stats.total_orders > 0 ? Math.round((o.value / stats.total_orders) * 100) : 0
+                    return (
+                      <div key={o.label} className="rounded-xl border border-slate-100 bg-slate-50/50 p-4">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium text-slate-600">{o.label}</p>
+                          <span className="text-xs text-slate-400">{percent}%</span>
+                        </div>
+                        <p className="mt-1 text-xl font-bold text-slate-800">{o.value.toLocaleString('en-PK')}</p>
+                        <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+                          <div className="h-full rounded-full bg-slate-400" style={{ width: `${percent}%` }} />
+                        </div>
                       </div>
-                      <p className="mt-1 text-xl font-bold text-slate-800">{o.value.toLocaleString()}</p>
-                      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
-                        <div className="h-full rounded-full bg-slate-400" style={{ width: `${(o.value / o.total) * 100}%` }} />
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             </section>
@@ -186,42 +179,6 @@ const AdminDashboard = () => {
               </div>
             </section>
           </div>
-
-          {/* Recent Orders */}
-          <section className="mt-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Recent Orders</h2>
-              <a href="/admin/orders" className="text-sm font-medium text-primary-main hover:underline">View All</a>
-            </div>
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-50 text-xs uppercase text-slate-500">
-                    <tr>
-                      <th className="px-5 py-3 font-medium">Order ID</th>
-                      <th className="px-5 py-3 font-medium">Retailer</th>
-                      <th className="px-5 py-3 font-medium">Amount</th>
-                      <th className="px-5 py-3 font-medium">Status</th>
-                      <th className="px-5 py-3 font-medium text-right">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {recent.map((r) => (
-                      <tr key={r.id} className="transition-colors hover:bg-slate-50/50">
-                        <td className="px-5 py-3 font-medium text-slate-700">{r.id}</td>
-                        <td className="px-5 py-3 text-slate-600">{r.retailer}</td>
-                        <td className="px-5 py-3 font-medium text-slate-800">{r.amount}</td>
-                        <td className="px-5 py-3">
-                          <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${statusClass(r.status)}`}>{r.status}</span>
-                        </td>
-                        <td className="px-5 py-3 text-right text-slate-500">{r.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
         </main>
       </div>
     </div>
