@@ -128,10 +128,10 @@ const DistributorLogin = () => {
                 <FieldDescription className=" text-center text-sm">
                   Don&apos;t have an account?{" "}
                   <a
-                    href="/distributor/signup"
+                    href="/distributor/request"
                     className="font-medium text-secondary-main underline-offset-4 transition-colors hover:text-secondary-main/80 hover:underline"
                   >
-                    Register now
+                    Request now
                   </a>
                 </FieldDescription>
                   </Field>

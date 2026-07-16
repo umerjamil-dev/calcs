@@ -7,7 +7,7 @@ import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 
 // ── Page Component ──
-const DistributorSignup = () => {
+const DistributorRequest = () => {
   const { name, number, email, address, companyName, password, nic, errors, isSubmitting, setField, signup } = useDistributorSignupStore()
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -103,8 +103,8 @@ const DistributorSignup = () => {
               <div className="mx-auto flex items-center justify-start">
                 <img src={logo} alt="Mal Pakistan" className="h-12 object-contain" />
               </div>
-              <h1 className="text-center text-xl font-semibold text-foreground">Distributor Sign Up</h1>
-              <p className="text-center text-sm text-muted-foreground">Register your distribution business</p>
+              <h1 className="text-center text-xl font-semibold text-foreground">Distributor Request Form</h1>
+              <p className="text-center text-sm text-muted-foreground">Request to be Distributor</p>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} noValidate>
@@ -161,4 +161,4 @@ const DistributorSignup = () => {
   )
 }
 
-export default DistributorSignup
+export default DistributorRequest

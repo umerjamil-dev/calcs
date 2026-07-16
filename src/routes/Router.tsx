@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { Login, Signup } from '../pages/Auth'
 import { AdminLogin } from '../pages/Admin'
-import { DistributorLogin, DistributorSignup } from '../pages/Distributor'
+import { DistributorLogin, DistributorRequest } from '../pages/Distributor'
 
 const Router = () => {
   return (
@@ -16,7 +16,7 @@ const Router = () => {
 
       {/* Distributor */}
       <Route path='/distributor/login' element={<DistributorLogin />} />
-      <Route path='/distributor/signup' element={<DistributorSignup />} />
+      <Route path='/distributor/request' element={<DistributorRequest />} />
     </Routes>
   )
 }

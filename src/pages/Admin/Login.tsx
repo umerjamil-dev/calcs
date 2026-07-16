@@ -87,6 +87,7 @@ const AdminLogin = () => {
       </div>
 
       {/* Right form panel */}
+      
       <div className="flex w-full flex-col items-center justify-center p-6 lg:w-1/2">
         <div className={cn('flex w-full max-w-sm flex-col gap-6')}>
           <Card className="border-none shadow-xl shadow-black/5 ring-1 ring-border/60">
