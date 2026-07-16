@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { Login, Signup } from '../pages/Auth'
-import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor } from '../pages/Admin'
+import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor, AdminOrders, AdminNewOrders, AdminAssignedOrders, AdminProcessingOrders, AdminShippedOrders, AdminDeliveredOrders, AdminCancelledOrders, AdminOrderDetail } from '../pages/Admin'
 import { DistributorLogin, DistributorRequest } from '../pages/Distributor'
 
 const Router = () => {
@@ -25,6 +25,14 @@ const Router = () => {
       <Route path='/admin/retailers/add' element={<AdminAddRetailer />} />
       <Route path='/admin/distributors' element={<AdminDistributors />} />
       <Route path='/admin/distributors/add' element={<AdminAddDistributor />} />
+      <Route path='/admin/orders' element={<AdminOrders />} />
+      <Route path='/admin/orders/new' element={<AdminNewOrders />} />
+      <Route path='/admin/orders/assigned' element={<AdminAssignedOrders />} />
+      <Route path='/admin/orders/processing' element={<AdminProcessingOrders />} />
+      <Route path='/admin/orders/shipped' element={<AdminShippedOrders />} />
+      <Route path='/admin/orders/delivered' element={<AdminDeliveredOrders />} />
+      <Route path='/admin/orders/cancelled' element={<AdminCancelledOrders />} />
+      <Route path='/admin/orders/:id' element={<AdminOrderDetail />} />
 
       {/* Distributor */}
       <Route path='/distributor/login' element={<DistributorLogin />} />

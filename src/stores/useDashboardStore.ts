@@ -49,7 +49,7 @@ export const useDashboardStore = create<DashboardState>()((set) => ({
   fetchStats: async () => {
     set({ loading: true })
     try {
-      const res = await api.get('/dashboard')
+      const res = await api.get('/admin/dashboard')
       const data = res.data.data || res.data
       set({ stats: { ...initialStats, ...data } })
     } catch (err: any) {

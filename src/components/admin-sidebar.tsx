@@ -7,10 +7,8 @@ import {
   Truck,
   ShoppingCart,
   CreditCard,
-  BarChart3,
   Warehouse,
   Bell,
-  Settings,
   ChevronDown,
   Menu,
   X,
@@ -66,12 +64,13 @@ const menuItems: MenuItem[] = [
     icon: <ShoppingCart size={18} />,
     children: [
       { label: 'All Orders', path: '/admin/orders' },
-      { label: 'Pending', path: '/admin/orders/pending' },
-      { label: 'Assigned', path: '/admin/orders/assigned' },
-      { label: 'Processing', path: '/admin/orders/processing' },
-      { label: 'Shipped', path: '/admin/orders/shipped' },
-      { label: 'Delivered', path: '/admin/orders/delivered' },
-      { label: 'Cancelled', path: '/admin/orders/cancelled' },
+      { label: 'New Orders', path: '/admin/orders/new' },
+      { label: 'Assigned Orders', path: '/admin/orders/assigned' },
+      { label: 'Processing Orders', path: '/admin/orders/processing' },
+      { label: 'Shipped Orders', path: '/admin/orders/shipped' },
+      { label: 'Delivered Orders', path: '/admin/orders/delivered' },
+      { label: 'Cancelled Orders', path: '/admin/orders/cancelled' },
+      
     ],
   },
   {
@@ -83,18 +82,18 @@ const menuItems: MenuItem[] = [
       { label: 'Outstanding Balance', path: '/admin/payments/outstanding' },
     ],
   },
-  {
-    label: 'Reports',
-    icon: <BarChart3 size={18} />,
-    children: [
-      { label: 'Sales Report', path: '/admin/reports/sales' },
-      { label: 'Orders Report', path: '/admin/reports/orders' },
-      { label: 'Retailer Report', path: '/admin/reports/retailers' },
-      { label: 'Distributor Report', path: '/admin/reports/distributors' },
-      { label: 'Product Sales Report', path: '/admin/reports/products' },
-      { label: 'Payment Report', path: '/admin/reports/payments' },
-    ],
-  },
+//   {
+//     label: 'Reports',
+//     icon: <BarChart3 size={18} />,
+//     children: [
+//       { label: 'Sales Report', path: '/admin/reports/sales' },
+//       { label: 'Orders Report', path: '/admin/reports/orders' },
+//       { label: 'Retailer Report', path: '/admin/reports/retailers' },
+//       { label: 'Distributor Report', path: '/admin/reports/distributors' },
+//       { label: 'Product Sales Report', path: '/admin/reports/products' },
+//       { label: 'Payment Report', path: '/admin/reports/payments' },
+//     ],
+//   },
   {
     label: 'Inventory',
     icon: <Warehouse size={18} />,
@@ -105,7 +104,7 @@ const menuItems: MenuItem[] = [
     ],
   },
   { label: 'Notifications', icon: <Bell size={18} />, path: '/admin/notifications' },
-  { label: 'Settings', icon: <Settings size={18} />, path: '/admin/settings' },
+//   { label: 'Settings', icon: <Settings size={18} />, path: '/admin/settings' },
 ]
 
 export function AdminSidebar() {
@@ -188,8 +187,8 @@ export function AdminSidebar() {
 
   const sidebarContent = (
     <div className="flex h-full flex-col ">
-      <div className="flex items-center gap-3 border-b border-border/60 px-4 py-4">
-        <img src={logo} alt="Mal Pakistan" className="h-9 object-contain" />
+      <div className="flex flex-col   gap-3 border-b border-border/60 px-4 py-4">
+        <img src={logo} alt="Mal Pakistan" className="h-9 border object-contain" />
         <div>
           <p className="text-sm font-bold text-foreground">Mal Pakistan</p>
           <p className="text-xs text-muted-foreground">Admin Portal</p>

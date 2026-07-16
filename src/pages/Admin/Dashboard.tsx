@@ -85,7 +85,7 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 py-6">
+        <main className="mx-auto max-w-8xl px-6 py-6">
           {/* Welcome banner */}
           <div className="relative mb-6 overflow-hidden rounded-2xl bg-primary-main px-6 py-8 text-white shadow-md">
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/5" />
