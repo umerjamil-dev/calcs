@@ -12,6 +12,56 @@ interface LookupOption {
   name: string
 }
 
+const Field = ({ label, id, type = 'text', value, onChange, placeholder, error }: {
+  label: string
+  id: string
+  type?: string
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+  error?: string
+}) => (
+  <div className="space-y-1.5">
+    <label htmlFor={id} className="text-sm font-medium text-slate-700">{label}</label>
+    <Input
+      id={id}
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className={`h-10 rounded-lg border-slate-200 ${error ? 'ring-2 ring-red-200' : ''}`}
+    />
+    {error && <p className="text-xs text-red-600">{error}</p>}
+  </div>
+)
+
+const Select = ({ label, id, value, onChange, options, error, loading }: {
+  label: string
+  id: string
+  value: string
+  onChange: (v: string) => void
+  options: { id: string | number; name: string }[]
+  error?: string
+  loading?: boolean
+}) => (
+  <div className="space-y-1.5">
+    <label htmlFor={id} className="text-sm font-medium text-slate-700">{label}</label>
+    <select
+      id={id}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      disabled={loading}
+      className={`h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none transition-colors focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 disabled:bg-slate-100 ${error ? 'ring-2 ring-red-200' : ''}`}
+    >
+      <option value="">{loading ? 'Loading...' : 'Select'}</option>
+      {options.map((opt) => (
+        <option key={opt.id} value={opt.id}>{opt.name}</option>
+      ))}
+    </select>
+    {error && <p className="text-xs text-red-600">{error}</p>}
+  </div>
+)
+
 const AdminAddProduct = () => {
   const navigate = useNavigate()
   const store = useProductFormStore()
@@ -53,55 +103,6 @@ const AdminAddProduct = () => {
     }
   }
 
-  const Field = ({ label, id, type = 'text', value, onChange, placeholder, error }: {
-    label: string
-    id: string
-    type?: string
-    value: string
-    onChange: (v: string) => void
-    placeholder?: string
-    error?: string
-  }) => (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-slate-700">{label}</label>
-      <Input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className={`h-10 rounded-lg border-slate-200 ${error ? 'ring-2 ring-red-200' : ''}`}
-      />
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  )
-
-  const Select = ({ label, id, value, onChange, options, error }: {
-    label: string
-    id: string
-    value: string
-    onChange: (v: string) => void
-    options: { id: string | number; name: string }[]
-    error?: string
-  }) => (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-slate-700">{label}</label>
-      <select
-        id={id}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={lookupsLoading}
-        className={`h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none transition-colors focus:border-primary-main focus:ring-2 focus:ring-primary-main/20 disabled:bg-slate-100 ${error ? 'ring-2 ring-red-200' : ''}`}
-      >
-        <option value="">{lookupsLoading ? 'Loading...' : 'Select'}</option>
-        {options.map((opt) => (
-          <option key={opt.id} value={opt.id}>{opt.name}</option>
-        ))}
-      </select>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  )
-
   return (
     <div className="min-h-screen bg-slate-50">
       <AdminSidebar />
@@ -138,11 +139,11 @@ const AdminAddProduct = () => {
                 <Field label="SKU" id="sku" value={store.sku} onChange={(v) => store.setField('sku', v)} placeholder="SKU-001" />
                 <Field label="Slug" id="slug" value={store.slug} onChange={(v) => store.setField('slug', v)} placeholder="shell-helix-hx8-5w-30" />
 
-                <Select label="Brand" id="brand_id" value={store.brand_id} onChange={(v) => store.setField('brand_id', v)} options={brands} />
-                <Select label="Category" id="category_id" value={store.category_id} onChange={(v) => store.setField('category_id', v)} options={categories} />
-                <Select label="Subcategory" id="subcategory_id" value={store.subcategory_id} onChange={(v) => store.setField('subcategory_id', v)} options={subcategories} />
-                <Select label="Product Type" id="product_type_id" value={store.product_type_id} onChange={(v) => store.setField('product_type_id', v)} options={productTypes} />
-                <Select label="Engine Type" id="engine_type_id" value={store.engine_type_id} onChange={(v) => store.setField('engine_type_id', v)} options={engineTypes} />
+                <Select label="Brand" id="brand_id" value={store.brand_id} onChange={(v) => store.setField('brand_id', v)} options={brands} loading={lookupsLoading} />
+                <Select label="Category" id="category_id" value={store.category_id} onChange={(v) => store.setField('category_id', v)} options={categories} loading={lookupsLoading} />
+                <Select label="Subcategory" id="subcategory_id" value={store.subcategory_id} onChange={(v) => store.setField('subcategory_id', v)} options={subcategories} loading={lookupsLoading} />
+                <Select label="Product Type" id="product_type_id" value={store.product_type_id} onChange={(v) => store.setField('product_type_id', v)} options={productTypes} loading={lookupsLoading} />
+                <Select label="Engine Type" id="engine_type_id" value={store.engine_type_id} onChange={(v) => store.setField('engine_type_id', v)} options={engineTypes} loading={lookupsLoading} />
                 <Field label="Viscosity Grade" id="viscosity_grade" value={store.viscosity_grade} onChange={(v) => store.setField('viscosity_grade', v)} placeholder="5W-30" />
 
                 <Field label="Pack Size *" id="pack_size" type="number" value={store.pack_size} onChange={(v) => store.setField('pack_size', v)} placeholder="4.00" error={store.errors.pack_size} />

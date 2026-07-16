@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { Login, Signup } from '../pages/Auth'
-import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes } from '../pages/Admin'
+import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor } from '../pages/Admin'
 import { DistributorLogin, DistributorRequest } from '../pages/Distributor'
 
 const Router = () => {
@@ -21,6 +21,10 @@ const Router = () => {
       <Route path='/admin/subcategories' element={<AdminSubcategories />} />
       <Route path='/admin/product-types' element={<AdminProductTypes />} />
       <Route path='/admin/engine-types' element={<AdminEngineTypes />} />
+      <Route path='/admin/retailers' element={<AdminRetailers />} />
+      <Route path='/admin/retailers/add' element={<AdminAddRetailer />} />
+      <Route path='/admin/distributors' element={<AdminDistributors />} />
+      <Route path='/admin/distributors/add' element={<AdminAddDistributor />} />
 
       {/* Distributor */}
       <Route path='/distributor/login' element={<DistributorLogin />} />
