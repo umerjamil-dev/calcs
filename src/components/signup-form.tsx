@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 
 export function SignupForm({ className, ...props }: React.ComponentProps<'div'>) {
   const {
-    name, number, email, address, companyName, password, nic,
+    name, number, email, address, companyName, password, passwordConfirmation, nic,
     errors, isSubmitting, setField, signup,
   } = useSignupStore()
 
@@ -31,8 +31,11 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
     { id: 'number', label: 'Phone Number', type: 'tel', placeholder: '03XX-XXXXXXX', value: number },
     { id: 'email', label: 'Email', type: 'email', placeholder: 'you@example.com', value: email },
     { id: 'companyName', label: 'Company / Shop Name', type: 'text', placeholder: 'Mal Traders', value: companyName },
-    { id: 'password', label: 'Password', type: 'password', placeholder: '••••••••', value: password },
+    
     { id: 'nic', label: 'NIC (CNIC)', type: 'text', placeholder: 'XXXXX-XXXXXXX-X', value: nic },
+    { id: 'address', label: 'Address', type: 'text', placeholder: 'XXXXX-XXXXXXX-X', value: address },
+    { id: 'password', label: 'Password', type: 'text', placeholder: '••••••••', value: password },
+    { id: 'passwordConfirmation', label: 'Confirm Password', type: 'text', placeholder: '••••••••', value: passwordConfirmation },
   ]
 
   return (
@@ -65,28 +68,17 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                       placeholder={placeholder}
                       value={value}
                       onChange={(e) => setField(id, e.target.value)}
+                      autoComplete={id === 'password' || id === 'passwordConfirmation' ? 'new-password' : 'off'}
                       className={`h-11 rounded-lg transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30 ${
                         errors[id] ? 'ring-2 ring-secondary/50' : ''
-                      }`}
+                      } ${(id === 'password' || id === 'passwordConfirmation') ? '[-webkit-text-security:disc]' : ''}`}
                     />
                   </Field>
                 ))}
               </div>
 
               {/* Address — full width below grid */}
-              <Field>
-                <FieldLabel htmlFor="address">Address</FieldLabel>
-                <Input
-                  id="address"
-                  type="text"
-                  placeholder="Shop #5, Main Boulevard, Lahore"
-                  value={address}
-                  onChange={(e) => setField('address', e.target.value)}
-                  className={`h-11 rounded-lg transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30 ${
-                    errors.address ? 'ring-2 ring-secondary/50' : ''
-                  }`}
-                />
-              </Field>
+              
 
               <Field className="gap-3">
                 <Button

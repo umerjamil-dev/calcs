@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 
 // ── Page Component ──
 const DistributorRequest = () => {
-  const { name, number, email, address, companyName, password, nic, errors, isSubmitting, setField, signup } = useDistributorSignupStore()
+  const { name, number, email, address, companyName, password, passwordConfirmation, nic, errors, isSubmitting, setField, signup } = useDistributorSignupStore()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,8 +20,10 @@ const DistributorRequest = () => {
     { id: 'number', label: 'Phone Number', type: 'tel', placeholder: '03XX-XXXXXXX', value: number },
     { id: 'email', label: 'Email', type: 'email', placeholder: 'distributor@mal.com.pk', value: email },
     { id: 'companyName', label: 'Company / Shop Name', type: 'text', placeholder: 'Mal Distributors', value: companyName },
-    { id: 'password', label: 'Password', type: 'password', placeholder: '••••••••', value: password },
+    { id: 'password', label: 'Password', type: 'text', placeholder: '••••••••', value: password },
+    { id: 'passwordConfirmation', label: 'Confirm Password', type: 'text', placeholder: '••••••••', value: passwordConfirmation },
     { id: 'nic', label: 'NIC (CNIC)', type: 'text', placeholder: 'XXXXX-XXXXXXX-X', value: nic },
+    { id: 'address', label: 'Address', type: 'text', placeholder: 'Shop #5, Main Boulevard, Lahore', value: address },
   ]
 
   return (
@@ -119,22 +121,14 @@ const DistributorRequest = () => {
                           placeholder={placeholder}
                           value={value}
                           onChange={(e) => setField(id, e.target.value)}
-                          className={`h-11 rounded-lg ${errors[id] ? 'ring-2 ring-secondary-main/50' : ''}`}
+                          autoComplete={id === 'password' || id === 'passwordConfirmation' ? 'new-password' : 'off'}
+                          className={`h-11 rounded-lg ${errors[id] ? 'ring-2 ring-secondary-main/50' : ''} ${(id === 'password' || id === 'passwordConfirmation') ? '[-webkit-text-security:disc]' : ''}`}
                         />
                       </Field>
                     ))}
                   </div>
-                  <Field>
-                    <FieldLabel htmlFor="address">Address</FieldLabel>
-                    <Input
-                      id="address"
-                      type="text"
-                      placeholder="Shop #5, Main Boulevard, Lahore"
-                      value={address}
-                      onChange={(e) => setField('address', e.target.value)}
-                      className={`h-11 rounded-lg ${errors.address ? 'ring-2 ring-secondary-main/50' : ''}`}
-                    />
-                  </Field>
+                  
+                    
                   <Field className="gap-3">
                     <Button type="submit" disabled={isSubmitting} className="h-11 w-full cursor-pointer rounded-lg bg-primary-main font-medium text-white hover:bg-primary-main/90 disabled:opacity-60">
                       {isSubmitting ? 'Creating...' : 'Create Account'}

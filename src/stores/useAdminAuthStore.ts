@@ -10,7 +10,7 @@ interface AdminAuthState {
   setEmail: (v: string) => void
   setPassword: (v: string) => void
   validate: () => boolean
-  login: () => Promise<void>
+  login: () => Promise<any>
 }
 
 export const useAdminAuthStore = create<AdminAuthState>()((set, get) => ({
@@ -35,8 +35,11 @@ export const useAdminAuthStore = create<AdminAuthState>()((set, get) => ({
     set({ isSubmitting: true })
     try {
       const { email, password } = get()
-      await axios.post('/api/admin/login', { email, password })
+      const res = await axios.post('https://realstatebackend.processiqtech.com/test/public/api/login', { email, password })
       toast.success('Admin login successful!')
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
+      return res.data
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Admin login failed')
     } finally {

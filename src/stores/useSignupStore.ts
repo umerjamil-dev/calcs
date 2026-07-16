@@ -9,6 +9,7 @@ interface SignupState {
   address: string
   companyName: string
   password: string
+  passwordConfirmation: string
   nic: string
   errors: Record<string, string | undefined>
   isSubmitting: boolean
@@ -24,6 +25,7 @@ export const useSignupStore = create<SignupState>()((set, get) => ({
   address: '',
   companyName: '',
   password: '',
+  passwordConfirmation: '',
   nic: '',
   errors: {} as Record<string, string | undefined>,
   isSubmitting: false,
@@ -32,7 +34,7 @@ export const useSignupStore = create<SignupState>()((set, get) => ({
     set({ [field]: value, errors: { ...get().errors, [field]: undefined } }),
 
   validate: () => {
-    const { name, number, email, address, companyName, password, nic } = get()
+    const { name, number, email, address, companyName, password, passwordConfirmation, nic } = get()
     const errors: Record<string, string | undefined> = {}
 
     if (!name.trim()) { errors.name = 'Name is required'; toast.error('Name is required') }
@@ -43,7 +45,8 @@ export const useSignupStore = create<SignupState>()((set, get) => ({
     if (!address.trim()) { errors.address = 'Address is required'; toast.error('Address is required') }
     if (!companyName.trim()) { errors.companyName = 'Company / Shop name is required'; toast.error('Company / Shop name is required') }
     if (!password) { errors.password = 'Password is required'; toast.error('Password is required') }
-    else if (password.length < 6) { errors.password = 'Password must be at least 6 characters'; toast.error('Password must be at least 6 characters') }
+    if (!passwordConfirmation) { errors.passwordConfirmation = 'Please confirm your password'; toast.error('Please confirm your password') }
+    else if (password !== passwordConfirmation) { errors.passwordConfirmation = 'Passwords do not match'; toast.error('Passwords do not match') }
     if (!nic.trim()) { errors.nic = 'NIC is required'; toast.error('NIC is required') }
     else if (!/^\d{13}$/.test(nic.replace(/-/g, ''))) { errors.nic = 'NIC must be 13 digits'; toast.error('NIC must be 13 digits') }
 
@@ -55,11 +58,17 @@ export const useSignupStore = create<SignupState>()((set, get) => ({
     if (!get().validate()) return
     set({ isSubmitting: true })
     try {
-      const { name, number, email, address, companyName, password, nic } = get()
-      const res = await axios.post('/api/auth/register', {
-        name, number, email, address, companyName, password, nic,
+      const { name, number, email, address, companyName, password, passwordConfirmation, nic } = get()
+      const res = await axios.post('https://realstatebackend.processiqtech.com/test/public/api/register', {
+        name, number, email, address, password,
+        password_confirmation: passwordConfirmation,
+        role_id: 3,
+        company_name: companyName,
+        nic,
       })
-      toast.success('Registration successful!')
+      toast.success(res.data.message || 'Registration successful!')
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
       return res.data
     } catch (err: any) {
       const msg = err.response?.data?.message || 'Registration failed. Please try again.'

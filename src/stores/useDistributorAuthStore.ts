@@ -35,8 +35,11 @@ export const useDistributorAuthStore = create<DistributorAuthState>()((set, get)
     set({ isSubmitting: true })
     try {
       const { email, password } = get()
-      await axios.post('/api/distributor/login', { email, password })
+      const res = await axios.post('https://realstatebackend.processiqtech.com/test/public/api/login', { email, password })
       toast.success('Distributor login successful!')
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
+      return res.data
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Distributor login failed')
     } finally {

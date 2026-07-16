@@ -43,8 +43,10 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     set({ isSubmitting: true })
     try {
       const { email, password } = get()
-      const res = await axios.post('/api/auth/login', { email, password })
+      const res = await axios.post('https://realstatebackend.processiqtech.com/test/public/api/login', { email, password })
       toast.success('Login successful!')
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
       return res.data
     } catch (err: any) {
       const msg = err.response?.data?.message || 'Login failed. Please try again.'

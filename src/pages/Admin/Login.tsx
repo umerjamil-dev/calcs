@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useAdminAuthStore } from '@/stores/useAdminAuthStore'
 import { cn } from '@/lib/utils'
 import { logo } from '@/assets'
@@ -8,11 +9,15 @@ import { Input } from '@/components/ui/input'
 
 // ── Page Component ──
 const AdminLogin = () => {
+  const navigate = useNavigate()
   const { email, password, errors, isSubmitting, setEmail, setPassword, login } = useAdminAuthStore()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    login()
+    const result = await login()
+    if (result) {
+      navigate('/admin/dashboard')
+    }
   }
 
   return (
@@ -77,7 +82,8 @@ const AdminLogin = () => {
               </div>
               <div className="border-l border-white/15 text-center">
                 <p className="text-2xl font-bold text-white">24/7</p>
-                <p className="text-xs text-white/50">Monitoring</p>
+                <p className="text-xs tex
+                +t-white/50">Monitoring</p>
               </div>
             </div>
           </div>
