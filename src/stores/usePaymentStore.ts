@@ -62,22 +62,43 @@ export interface DistributorBalance {
   }
 }
 
+export interface RetailerPaymentInfo {
+  retailer: {
+    id: number
+    name: string
+    number: string
+  }
+  total_order_amount: number
+  previous_payments: string
+  outstanding_balance: number
+  orders: {
+    id: number
+    order_number: string
+    total_amount: string
+    status: string
+    order_date: string
+  }[]
+}
+
 interface PaymentState {
   payments: Payment[]
   balances: Balance[]
   distributorBalances: DistributorBalance[]
+  retailerPaymentInfo: RetailerPaymentInfo | null
   loading: boolean
   submitting: boolean
   fetchPayments: () => Promise<void>
   fetchBalances: () => Promise<void>
   fetchDistributorBalances: () => Promise<void>
-  receivePayment: (data: { order_id: number; amount: number; payment_method: string; notes?: string }) => Promise<boolean>
+  fetchRetailerPaymentInfo: (retailerId: number) => Promise<void>
+  receivePayment: (data: { order_id: number; amount: number; payment_method: string; date: string; notes?: string }) => Promise<boolean>
 }
 
 export const usePaymentStore = create<PaymentState>()((set, get) => ({
   payments: [],
   balances: [],
   distributorBalances: [],
+  retailerPaymentInfo: null,
   loading: false,
   submitting: false,
 
@@ -120,10 +141,20 @@ export const usePaymentStore = create<PaymentState>()((set, get) => ({
     }
   },
 
+  fetchRetailerPaymentInfo: async (retailerId: number) => {
+    try {
+      const res = await api.post(`/payments/retailer`, { retailer_id: retailerId })
+      set({ retailerPaymentInfo: res.data.data || res.data })
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to fetch retailer info')
+      set({ retailerPaymentInfo: null })
+    }
+  },
+
   receivePayment: async (data) => {
     set({ submitting: true })
     try {
-      await api.post('/admin/payments', data)
+      await api.post('admin/payments/receive', data)
       toast.success('Payment received successfully')
       get().fetchPayments()
       return true

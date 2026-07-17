@@ -36,6 +36,12 @@ export const useAdminAuthStore = create<AdminAuthState>()((set, get) => ({
     try {
       const { email, password } = get()
       const res = await axios.post('https://realstatebackend.processiqtech.com/test/public/api/login', { email, password })
+
+      if (res.data.user?.role_id !== 1) {
+        toast.error('Access is denied')
+        return
+      }
+
       toast.success('Admin login successful!')
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('user', JSON.stringify(res.data.user))

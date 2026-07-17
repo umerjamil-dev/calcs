@@ -7,11 +7,12 @@ import {
   Truck,
   ShoppingCart,
   CreditCard,
-  Warehouse,
   Bell,
   ChevronDown,
   Menu,
   X,
+  Warehouse,
+  Settings,
 } from 'lucide-react'
 import { logo } from '@/assets'
 import { cn } from '@/lib/utils'
@@ -102,9 +103,9 @@ const menuItems: MenuItem[] = [
       { label: 'Low Stock', path: '/admin/inventory/low-stock' },
       { label: 'Stock History', path: '/admin/inventory/history' },
     ],
-  },
+  }, 
   { label: 'Notifications', icon: <Bell size={18} />, path: '/admin/notifications' },
-//   { label: 'Settings', icon: <Settings size={18} />, path: '/admin/settings' },
+  { label: 'Settings', icon: <Settings size={18} />, path: '/admin/settings' },
 ]
 
 export function AdminSidebar() {
@@ -116,7 +117,7 @@ export function AdminSidebar() {
         initial[item.label] = true
       }
     })
-    return initial
+    return initial  
   })
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -187,11 +188,11 @@ export function AdminSidebar() {
 
   const sidebarContent = (
     <div className="flex h-full flex-col ">
-      <div className="flex flex-col   gap-3 border-b border-border/60 px-4 py-4">
-        <img src={logo} alt="Mal Pakistan" className="h-9 border object-contain" />
+      <div className="flex flex-col   gap-2 border-b border-border/60 px-4 pt-2">
+        <img src={logo} alt="Mal Pakistan" className=" w-30  object-contain" />
         <div>
-          <p className="text-sm font-bold text-foreground">Mal Pakistan</p>
-          <p className="text-xs text-muted-foreground">Admin Portal</p>
+          <p className="text-md font-bold text-foreground">Mal Pakistan</p>
+          <p className="text-sm text-muted-foreground">Admin Portal</p>
         </div>
       </div>
       <nav className="flex-1 overflow-y-auto px-3 py-4">{menuItems.map(renderItem)}</nav>

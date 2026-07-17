@@ -88,7 +88,7 @@ export const useOrderStore = create<OrderState>()((set, get) => ({
   updateOrderStatus: async (id, status) => {
     set({ updating: true })
     try {
-      await api.put(`/admin/orders/${id}/status`, { status })
+      await api.post(`distributor/orders/change-status`, { status: status, order_id: id })
       toast.success(`Order status updated to ${status}`)
       get().fetchOrders()
       return true
@@ -103,7 +103,7 @@ export const useOrderStore = create<OrderState>()((set, get) => ({
   assignDistributor: async (orderId, distributorId) => {
     set({ updating: true })
     try {
-      await api.put(`/admin/orders/${orderId}/assign`, { distributor_id: distributorId })
+      await api.post(`admin/orders/assign`, { distributor_id: distributorId, order_id: orderId })
       toast.success('Distributor assigned successfully')
       get().fetchOrders()
       return true

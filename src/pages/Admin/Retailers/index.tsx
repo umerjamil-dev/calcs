@@ -28,7 +28,7 @@ const AdminRetailers = () => {
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 py-6">
+        <main className="mx-auto  px-6 py-6">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative w-full max-w-md">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />

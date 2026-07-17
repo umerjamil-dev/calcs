@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Plus, Search, Trash2, Edit3, Package } from 'lucide-react'
+import { Plus, Search, Trash2, Edit3, Package, View } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,7 +29,7 @@ const AdminProducts = () => {
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 py-6">
+        <main className="mx-auto  px-6 py-6">
           {/* Search bar */}
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative w-full max-w-md">
@@ -104,6 +104,12 @@ const AdminProducts = () => {
                         </td>
                         <td className="px-5 py-3 text-right">
                           <div className="flex items-center justify-end gap-2">
+                            <a
+                              href={`/admin/products/${p.id}`}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition-colors hover:bg-slate-100"
+                            >
+                              <View size={14} />
+                            </a>
                             <a
                               href={`/admin/products/edit/${p.id}`}
                               className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition-colors hover:bg-slate-100"

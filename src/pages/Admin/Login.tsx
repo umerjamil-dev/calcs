@@ -82,8 +82,8 @@ const AdminLogin = () => {
               </div>
               <div className="border-l border-white/15 text-center">
                 <p className="text-2xl font-bold text-white">24/7</p>
-                <p className="text-xs tex
-                +t-white/50">Monitoring</p>
+                <p className="text-xs text-white/50">Monitoring</p>
+                
               </div>
             </div>
           </div>
@@ -127,13 +127,7 @@ const AdminLogin = () => {
             </CardContent>
           </Card>
         </div>
-        <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-          Are you a
-          <a href="/login" className="font-semibold text-primary-main underline-offset-4 hover:underline">Retailer</a>
-          or
-          <a href="/distributor/login" className="font-semibold text-primary-main underline-offset-4 hover:underline">Distributor</a>
-          ?
-        </div>
+        
       </div>
     </div>
   )

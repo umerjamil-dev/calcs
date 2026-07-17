@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import toast from 'react-hot-toast'
 import api from '@/lib/axios'
+import type { Product } from './useProductStore'
 
 export interface ProductFormData {
   p_code: string
@@ -32,6 +33,8 @@ interface ProductFormState extends ProductFormData {
   removeGalleryImage: (index: number) => void
   validate: () => boolean
   submitProduct: () => Promise<boolean>
+  updateProduct: (id: number) => Promise<boolean>
+  loadProduct: (product: Product) => void
   resetForm: () => void
 }
 
@@ -143,6 +146,82 @@ export const useProductFormStore = create<ProductFormState>()((set, get) => ({
     } finally {
       set({ isSubmitting: false })
     }
+  },
+
+  updateProduct: async (id: number) => {
+    if (!get().validate()) return false
+    set({ isSubmitting: true })
+    try {
+      const data = get()
+      const formData = new FormData()
+
+      formData.append('p_code', data.p_code)
+      formData.append('name', data.name)
+      formData.append('pack_size', data.pack_size)
+      formData.append('pack_unit', data.pack_unit)
+      formData.append('price', data.price)
+      formData.append('stock_quantity', data.stock_quantity)
+      formData.append('low_stock_threshold', data.low_stock_threshold)
+
+      if (data.sku.trim()) formData.append('sku', data.sku)
+      if (data.slug.trim()) formData.append('slug', data.slug)
+      if (data.brand_id.trim()) formData.append('brand_id', data.brand_id)
+      if (data.category_id.trim()) formData.append('category_id', data.category_id)
+      if (data.subcategory_id.trim()) formData.append('subcategory_id', data.subcategory_id)
+      if (data.product_type_id.trim()) formData.append('product_type_id', data.product_type_id)
+      if (data.engine_type_id.trim()) formData.append('engine_type_id', data.engine_type_id)
+      if (data.viscosity_grade.trim()) formData.append('viscosity_grade', data.viscosity_grade)
+      if (data.discount_price.trim()) formData.append('discount_price', data.discount_price)
+      if (data.description.trim()) formData.append('description', data.description)
+
+      data.galleryImageFiles.forEach((file) => {
+        formData.append('gallery_images[]', file)
+      })
+
+      data.galleryPreviews.forEach((url) => {
+        if (url.startsWith('http')) {
+          formData.append('existing_gallery_images[]', url)
+        }
+      })
+
+      formData.append('_method', 'PUT')
+
+      await api.post(`/products/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      toast.success('Product updated successfully')
+      return true
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to update product')
+      return false
+    } finally {
+      set({ isSubmitting: false })
+    }
+  },
+
+  loadProduct: (product) => {
+    set({
+      p_code: product.p_code || '',
+      sku: product.sku || '',
+      name: product.name || '',
+      slug: product.slug || '',
+      brand_id: product.brand_id?.toString() || '',
+      category_id: product.category_id?.toString() || '',
+      subcategory_id: product.subcategory_id?.toString() || '',
+      product_type_id: product.product_type_id?.toString() || '',
+      engine_type_id: product.engine_type_id?.toString() || '',
+      viscosity_grade: product.viscosity_grade || '',
+      pack_size: product.pack_size || '',
+      pack_unit: product.pack_unit || 'L',
+      price: product.price || '',
+      discount_price: product.discount_price || '',
+      stock_quantity: product.stock_quantity?.toString() || '',
+      low_stock_threshold: product.low_stock_threshold?.toString() || '10',
+      description: product.description || '',
+      galleryImageFiles: [],
+      galleryPreviews: product.gallery_images || [],
+      errors: {},
+    })
   },
 
   resetForm: () => {
