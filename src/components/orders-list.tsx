@@ -1,7 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Eye, ShoppingCart } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
+import { Pagination } from '@/components/Pagination'
 import { useOrderStore } from '@/stores/useOrderStore'
+
+const ITEMS_PER_PAGE = 10
 
 interface OrdersListProps {
   title: string
@@ -28,6 +31,7 @@ const formatDate = (dateStr: string) => {
 
 export function OrdersList({ title, statusFilter }: OrdersListProps) {
   const { orders, users, loading, fetchOrders, fetchUsers, getUserById } = useOrderStore()
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchOrders()
@@ -42,6 +46,9 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
       )
     : orders
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
+  const paginatedOrders = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+ console.log(orders)
   return (
     <div className="min-h-screen bg-slate-50">
       <AdminSidebar />
@@ -85,12 +92,12 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
                       </td>
                     </tr>
                   ) : (
-                    filtered.map((order, index) => {
+                    paginatedOrders.map((order, index) => {
                       const retailer = getUserById(order.user_id)
                       const distributor = getUserById(order.distributor_id)
                       return (
                         <tr key={order.id} className="transition-colors hover:bg-slate-50/50">
-                          <td className="px-5 py-3 text-slate-500">{index + 1}</td>
+                          <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                           <td className="px-5 py-3 font-medium text-slate-800">{order.order_number}</td>
                           <td className="px-5 py-3 text-slate-600">{retailer?.name || `User #${order.user_id}`}</td>
                           <td className="px-5 py-3 text-slate-600">{distributor?.name || `User #${order.distributor_id}`}</td>
@@ -116,6 +123,13 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filtered.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
           </div>
         </main>
       </div>

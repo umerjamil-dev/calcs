@@ -1,14 +1,21 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Wallet } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
+import { Pagination } from '@/components/Pagination'
 import { usePaymentStore } from '@/stores/usePaymentStore'
+
+const ITEMS_PER_PAGE = 10
 
 const AdminOutstandingBalance = () => {
   const { balances, loading, fetchBalances } = usePaymentStore()
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchBalances()
   }, [fetchBalances])
+
+  const totalPages = Math.ceil(balances.length / ITEMS_PER_PAGE)
+  const paginatedBalances = balances.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
   return (
     <div className="min-h-screen bg-slate-50">
       <AdminSidebar />
@@ -51,9 +58,9 @@ const AdminOutstandingBalance = () => {
                       </td>
                     </tr>
                   ) : (
-                    balances.map((b, index) => (
+                    paginatedBalances.map((b, index) => (
                       <tr key={`${b.user_id}-${b.distributor_id}`} className="transition-colors hover:bg-slate-50/50">
-                        <td className="px-5 py-3 text-slate-500">{index + 1}</td>
+                        <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                         <td className="px-5 py-3 font-medium text-slate-800">{b.user?.name || `User #${b.user_id}`}</td>
                         <td className="px-5 py-3 text-slate-600">{b.distributor?.name || `User #${b.distributor_id}`}</td>
                         <td className="px-5 py-3 text-slate-600">{b.total_orders}</td>
@@ -70,6 +77,13 @@ const AdminOutstandingBalance = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={balances.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
           </div>
         </main>
       </div>

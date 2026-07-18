@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Eye, ShoppingCart } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
+import { Pagination } from '@/components/Pagination'
 import { useOrderStore } from '@/stores/useOrderStore'
+
+const ITEMS_PER_PAGE = 10
 
 const statusBadge = (status: string) => {
   const map: Record<string, string> = {
@@ -25,6 +28,7 @@ const AdminAssignedOrders = () => {
   const { orders, users, loading, fetchOrders, fetchUsers, getUserById, assignDistributor } = useOrderStore()
   const [assigningId, setAssigningId] = useState<number | null>(null)
   const [selectedDistributor, setSelectedDistributor] = useState<string>('')
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchOrders()
@@ -33,6 +37,9 @@ const AdminAssignedOrders = () => {
 
   const filtered = orders.filter((o) => ['confirmed', 'assigned'].includes(o.status))
   const distributors = users.filter((u) => u.role_id === 2)
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
+  const paginatedOrders = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   const handleAssign = async (orderId: number) => {
     if (!selectedDistributor) return
@@ -84,13 +91,13 @@ const AdminAssignedOrders = () => {
                       </td>
                     </tr>
                   ) : (
-                    filtered.map((order, index) => {
+                    paginatedOrders.map((order, index) => {
                       const retailer = getUserById(order.user_id)
                       const distributor = getUserById(order.distributor_id)
                       const isAssigning = assigningId === order.id
                       return (
                         <tr key={order.id} className="transition-colors hover:bg-slate-50/50">
-                          <td className="px-5 py-3 text-slate-500">{index + 1}</td>
+                          <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                           <td className="px-5 py-3 font-medium text-slate-800">{order.order_number}</td>
                           <td className="px-5 py-3 text-slate-600">{retailer?.name || `User #${order.user_id}`}</td>
                           <td className="px-5 py-3 text-slate-600">{distributor?.name || <span className="text-amber-600">Not assigned</span>}</td>
@@ -152,6 +159,13 @@ const AdminAssignedOrders = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filtered.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
           </div>
         </main>
       </div>

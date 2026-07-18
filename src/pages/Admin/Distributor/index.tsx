@@ -1,16 +1,23 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Search, Trash2, Truck } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Pagination } from '@/components/Pagination'
 import { useDistributorStore } from '@/stores/useDistributorStore'
+
+const ITEMS_PER_PAGE = 10
 
 const AdminDistributors = () => {
   const { distributors, loading, deletingId, fetchDistributors, deleteDistributor } = useDistributorStore()
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchDistributors()
   }, [fetchDistributors])
+
+  const totalPages = Math.ceil(distributors.length / ITEMS_PER_PAGE)
+  const paginatedDistributors = distributors.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -75,9 +82,9 @@ const AdminDistributors = () => {
                       </td>
                     </tr>
                   ) : (
-                    distributors.map((d, index) => (
+                    paginatedDistributors.map((d, index) => (
                       <tr key={d.id} className="transition-colors hover:bg-slate-50/50">
-                        <td className="px-5 py-3 text-slate-500">{index + 1}</td>
+                        <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                         <td className="px-5 py-3 font-medium text-slate-800">{d.name}</td>
                         <td className="px-5 py-3 text-slate-600">{d.number}</td>
                         <td className="px-5 py-3 text-slate-600">{d.email}</td>
@@ -103,6 +110,13 @@ const AdminDistributors = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={distributors.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
           </div>
         </main>
       </div>

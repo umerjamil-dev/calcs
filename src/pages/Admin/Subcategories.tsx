@@ -1,9 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Trash2 } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Pagination } from '@/components/Pagination'
 import { useSubcategoryStore } from '@/stores/useSubcategoryStore'
+
+const ITEMS_PER_PAGE = 10
 
 const AdminSubcategories = () => {
   const {
@@ -21,11 +24,15 @@ const AdminSubcategories = () => {
     addSubcategory,
     deleteSubcategory,
   } = useSubcategoryStore()
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchSubcategories()
     fetchCategories()
   }, [fetchSubcategories, fetchCategories])
+
+  const totalPages = Math.ceil(subcategories.length / ITEMS_PER_PAGE)
+  const paginatedSubcategories = subcategories.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -87,10 +94,10 @@ const AdminSubcategories = () => {
               <div className="px-5 py-10 text-center text-sm text-slate-500">No subcategories found</div>
             ) : (
               <ul className="divide-y divide-slate-100">
-                {subcategories.map((item) => (
+                {paginatedSubcategories.map((item, index) => (
                   <li key={item.id} className="flex items-center justify-between px-5 py-3 transition-colors hover:bg-slate-50/50">
                     <div>
-                      <span className="text-sm font-medium text-slate-800">{item.name}</span>
+                      <span className="text-sm font-medium text-slate-800">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}. {item.name}</span>
                       {item.category && (
                         <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{item.category.name}</span>
                       )}
@@ -107,6 +114,13 @@ const AdminSubcategories = () => {
                 ))}
               </ul>
             )}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={subcategories.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
           </div>
         </main>
       </div>

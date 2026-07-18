@@ -15,6 +15,7 @@ const AdminProductDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { products, loading, deletingId, fetchProducts, deleteProduct } = useProductStore()
+  const [activeImage, setActiveImage] = useState(0)
   const [lookups, setLookups] = useState<Record<string, LookupItem[]>>({
     brands: [],
     categories: [],
@@ -125,13 +126,44 @@ const AdminProductDetail = () => {
                 <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                   <p className="mb-3 text-sm font-semibold text-slate-800">Product Images</p>
                   {product.gallery_images?.length > 0 ? (
-                    <div className="grid  gap-3">
-                      {product.gallery_images.map((img, index) => (
-                        <div key={index} className="aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-                          <img src={img} alt={`${product.name} ${index + 1}`} className="h-full w-full object-cover" />
+                    <>
+                      <div className="relative aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                        <img
+                          src={product.gallery_images[activeImage]}
+                          alt={`${product.name} ${activeImage + 1}`}
+                          className="h-full w-full object-cover"
+                        />
+                        {product.gallery_images.length > 1 && (
+                          <>
+                            <button
+                              onClick={() => setActiveImage((prev) => (prev === 0 ? product.gallery_images.length - 1 : prev - 1))}
+                              className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow hover:bg-white"
+                            >
+                              ‹
+                            </button>
+                            <button
+                              onClick={() => setActiveImage((prev) => (prev === product.gallery_images.length - 1 ? 0 : prev + 1))}
+                              className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow hover:bg-white"
+                            >
+                              ›
+                            </button>
+                          </>
+                        )}
+                      </div>
+                      {product.gallery_images.length > 1 && (
+                        <div className="mt-3 flex gap-2 overflow-x-auto">
+                          {product.gallery_images.map((img, index) => (
+                            <button
+                              key={index}
+                              onClick={() => setActiveImage(index)}
+                              className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition-colors ${index === activeImage ? 'border-primary-main' : 'border-slate-200'}`}
+                            >
+                              <img src={img} alt={`thumb ${index + 1}`} className="h-full w-full object-cover" />
+                            </button>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      )}
+                    </>
                   ) : (
                     <div className="flex aspect-square items-center justify-center rounded-lg border border-slate-200 bg-slate-50">
                       <Package size={48} className="text-slate-300" />
@@ -167,7 +199,7 @@ const AdminProductDetail = () => {
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     <DetailItem label="Product Code" value={product.p_code} />
-                    <DetailItem label="Slug" value={product.slug || '-'} />
+                    
                     <DetailItem label="Brand" value={getName(lookups.brands, product.brand_id)} />
                     <DetailItem label="Category" value={getName(lookups.categories, product.category_id)} />
                     <DetailItem label="Subcategory" value={getName(lookups.subcategories, product.subcategory_id)} />

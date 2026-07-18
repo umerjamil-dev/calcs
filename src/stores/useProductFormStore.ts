@@ -26,6 +26,8 @@ export interface ProductFormData {
 interface ProductFormState extends ProductFormData {
   galleryImageFiles: File[]
   galleryPreviews: string[]
+  existingImageUrls: string[]
+  removedExistingImages: string[]
   errors: Record<string, string | undefined>
   isSubmitting: boolean
   setField: (field: keyof ProductFormData, value: string) => void
@@ -62,6 +64,8 @@ export const useProductFormStore = create<ProductFormState>()((set, get) => ({
   ...initialState,
   galleryImageFiles: [],
   galleryPreviews: [],
+  existingImageUrls: [],
+  removedExistingImages: [],
   errors: {},
   isSubmitting: false,
 
@@ -81,27 +85,33 @@ export const useProductFormStore = create<ProductFormState>()((set, get) => ({
     set((state) => {
       const newFiles = [...state.galleryImageFiles]
       const newPreviews = [...state.galleryPreviews]
-      URL.revokeObjectURL(newPreviews[index])
-      newFiles.splice(index, 1)
+      const newExisting = [...state.existingImageUrls]
+      const newRemoved = [...state.removedExistingImages]
+      const removedUrl = newPreviews[index]
+
+      if (removedUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(removedUrl)
+        newFiles.splice(index, 1)
+      } else {
+        // Existing server image
+        newRemoved.push(removedUrl)
+        const existingIndex = newExisting.indexOf(removedUrl)
+        if (existingIndex > -1) newExisting.splice(existingIndex, 1)
+      }
+
       newPreviews.splice(index, 1)
-      return { galleryImageFiles: newFiles, galleryPreviews: newPreviews }
+      return {
+        galleryImageFiles: newFiles,
+        galleryPreviews: newPreviews,
+        existingImageUrls: newExisting,
+        removedExistingImages: newRemoved,
+      }
     })
   },
 
   validate: () => {
-    const data = get()
-    const errors: Record<string, string | undefined> = {}
-
-    if (!data.p_code.trim()) { errors.p_code = 'Product code is required'; toast.error('Product code is required') }
-    if (!data.name.trim()) { errors.name = 'Product name is required'; toast.error('Product name is required') }
-    if (!data.pack_size.trim()) { errors.pack_size = 'Pack size is required'; toast.error('Pack size is required') }
-    if (!data.pack_unit.trim()) { errors.pack_unit = 'Pack unit is required'; toast.error('Pack unit is required') }
-    if (!data.price.trim()) { errors.price = 'Price is required'; toast.error('Price is required') }
-    if (!data.stock_quantity.trim()) { errors.stock_quantity = 'Stock quantity is required'; toast.error('Stock quantity is required') }
-    if (!data.low_stock_threshold.trim()) { errors.low_stock_threshold = 'Low stock threshold is required'; toast.error('Low stock threshold is required') }
-
-    set({ errors })
-    return Object.keys(errors).length === 0
+    set({ errors: {} })
+    return true
   },
 
   submitProduct: async () => {
@@ -134,13 +144,12 @@ export const useProductFormStore = create<ProductFormState>()((set, get) => ({
         formData.append('gallery_images[]', file)
       })
 
-      await api.post('/products', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      await api.post('/products', formData)
       toast.success('Product added successfully')
       get().resetForm()
       return true
     } catch (err: any) {
+      // console.log()
       toast.error(err.response?.data?.message || 'Failed to add product')
       return false
     } finally {
@@ -178,17 +187,13 @@ export const useProductFormStore = create<ProductFormState>()((set, get) => ({
         formData.append('gallery_images[]', file)
       })
 
-      data.galleryPreviews.forEach((url) => {
-        if (url.startsWith('http')) {
-          formData.append('existing_gallery_images[]', url)
-        }
+      data.removedExistingImages.forEach((url) => {
+        formData.append('removed_images[]', url)
       })
 
       formData.append('_method', 'PUT')
 
-      await api.post(`/products/${id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      await api.post(`/products/${id}`, formData)
       toast.success('Product updated successfully')
       return true
     } catch (err: any) {
@@ -220,6 +225,8 @@ export const useProductFormStore = create<ProductFormState>()((set, get) => ({
       description: product.description || '',
       galleryImageFiles: [],
       galleryPreviews: product.gallery_images || [],
+      existingImageUrls: product.gallery_images || [],
+      removedExistingImages: [],
       errors: {},
     })
   },
@@ -227,6 +234,6 @@ export const useProductFormStore = create<ProductFormState>()((set, get) => ({
   resetForm: () => {
     const state = get()
     state.galleryPreviews.forEach((url) => URL.revokeObjectURL(url))
-    set({ ...initialState, galleryImageFiles: [], galleryPreviews: [], errors: {} })
+    set({ ...initialState, galleryImageFiles: [], galleryPreviews: [], existingImageUrls: [], removedExistingImages: [], errors: {} })
   },
 }))

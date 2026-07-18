@@ -1,9 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Trash2, Search, Tag } from 'lucide-react'
 import { AdminSidebar } from './admin-sidebar'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
+import { Pagination } from './Pagination'
 import { useLookupStore } from '@/stores/useLookupStore'
+
+const ITEMS_PER_PAGE = 10
 
 interface LookupManagerProps {
   title: string
@@ -12,6 +15,7 @@ interface LookupManagerProps {
 
 export function LookupManager({ title, endpoint }: LookupManagerProps) {
   const { items, loading, adding, deletingId, name, setName, fetchItems, addItem, deleteItem } = useLookupStore()
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchItems(endpoint)
@@ -23,6 +27,9 @@ export function LookupManager({ title, endpoint }: LookupManagerProps) {
   }
 
   const label = title.replace('Management', '').trim()
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
+  const paginatedItems = items.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -125,9 +132,9 @@ export function LookupManager({ title, endpoint }: LookupManagerProps) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {items.map((item, index) => (
+                      {paginatedItems.map((item, index) => (
                         <tr key={item.id} className="transition-colors hover:bg-slate-50/50">
-                          <td className="px-5 py-3 text-slate-500">{index + 1}</td>
+                          <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                           <td className="px-5 py-3 font-medium text-slate-800">{item.name}</td>
                           <td className="px-5 py-3 text-right">
                             <button
@@ -144,6 +151,13 @@ export function LookupManager({ title, endpoint }: LookupManagerProps) {
                     </tbody>
                   </table>
                 )}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  totalItems={items.length}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                />
               </div>
             </section>
           </div>

@@ -11,8 +11,8 @@ import {
   ChevronDown,
   Menu,
   X,
-  Warehouse,
-  Settings,
+  User,
+  MessageCircleCheckIcon,
 } from 'lucide-react'
 import { logo } from '@/assets'
 import { cn } from '@/lib/utils'
@@ -39,9 +39,9 @@ const menuItems: MenuItem[] = [
       { label: 'Add Product', path: '/admin/products/add' },
       { label: 'Categories', path: '/admin/categories' },
       { label: 'Subcategories', path: '/admin/subcategories' },
-      { label: 'Brands', path: '/admin/brands' },
+       { label: 'Brands', path: '/admin/brands' },
       { label: 'Product Types', path: '/admin/product-types' },
-      { label: 'Engine Types', path: '/admin/engine-types' },
+      { label: 'Engine Types', path: '/admin/engine-types' }, 
     ],
   },
   {
@@ -78,34 +78,31 @@ const menuItems: MenuItem[] = [
     label: 'Payments',
     icon: <CreditCard size={18} />,
     children: [
-      { label: 'Receive Payment', path: '/admin/payments/receive' },
+      // { label: 'Receive Payment', path: '/admin/payments/receive' },
       { label: 'Payment History', path: '/admin/payments/history' },
       { label: 'Outstanding Balance', path: '/admin/payments/outstanding' },
     ],
   },
-//   {
-//     label: 'Reports',
-//     icon: <BarChart3 size={18} />,
-//     children: [
-//       { label: 'Sales Report', path: '/admin/reports/sales' },
-//       { label: 'Orders Report', path: '/admin/reports/orders' },
-//       { label: 'Retailer Report', path: '/admin/reports/retailers' },
-//       { label: 'Distributor Report', path: '/admin/reports/distributors' },
-//       { label: 'Product Sales Report', path: '/admin/reports/products' },
-//       { label: 'Payment Report', path: '/admin/reports/payments' },
-//     ],
-//   },
   {
-    label: 'Inventory',
-    icon: <Warehouse size={18} />,
+    label: 'Messages',
+    icon: <MessageCircleCheckIcon size={18} />,
+   
     children: [
-      { label: 'Stock', path: '/admin/inventory/stock' },
-      { label: 'Low Stock', path: '/admin/inventory/low-stock' },
-      { label: 'Stock History', path: '/admin/inventory/history' },
+      { label: 'All Messages', path: '/admin/messages' },
+      { label: 'Unread Messages', path: '/admin/messages/unread' },
     ],
-  }, 
-  { label: 'Notifications', icon: <Bell size={18} />, path: '/admin/notifications' },
-  { label: 'Settings', icon: <Settings size={18} />, path: '/admin/settings' },
+  },
+  // {
+  //   label: 'Inventory',
+  //   icon: <Warehouse size={18} />,
+  //   children: [
+  //     { label: 'Stock', path: '/admin/inventory/stock' },
+  //     { label: 'Low Stock', path: '/admin/inventory/low-stock' },
+  //     { label: 'Stock History', path: '/admin/inventory/history' },
+  //   ],
+  // }, 
+  { label: 'Complians', icon: <Bell size={18} />, path: '/admin/notifications' },
+  { label: 'Profile', icon: <User size={18} />, path: '/admin/settings' },
 ]
 
 export function AdminSidebar() {

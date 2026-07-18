@@ -134,10 +134,10 @@ const AdminAddProduct = () => {
               <h2 className="mb-6 text-base font-semibold text-slate-800">Product Information</h2>
 
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-                <Field label="Product Code *" id="p_code" value={store.p_code} onChange={(v) => store.setField('p_code', v)} placeholder="P23301" error={store.errors.p_code} />
-                <Field label="Product Name *" id="name" value={store.name} onChange={(v) => store.setField('name', v)} placeholder="Shell Helix HX8 5W-30" error={store.errors.name} />
+                <Field label="Product Code" id="p_code" value={store.p_code} onChange={(v) => store.setField('p_code', v)} placeholder="P23301" error={store.errors.p_code} />
+                <Field label="Product Name" id="name" value={store.name} onChange={(v) => store.setField('name', v)} placeholder="Shell Helix HX8 5W-30" error={store.errors.name} />
                 <Field label="SKU" id="sku" value={store.sku} onChange={(v) => store.setField('sku', v)} placeholder="SKU-001" />
-                <Field label="Slug" id="slug" value={store.slug} onChange={(v) => store.setField('slug', v)} placeholder="shell-helix-hx8-5w-30" />
+
 
                 <Select label="Brand" id="brand_id" value={store.brand_id} onChange={(v) => store.setField('brand_id', v)} options={brands} loading={lookupsLoading} />
                 <Select label="Category" id="category_id" value={store.category_id} onChange={(v) => store.setField('category_id', v)} options={categories} loading={lookupsLoading} />
@@ -146,11 +146,11 @@ const AdminAddProduct = () => {
                 <Select label="Engine Type" id="engine_type_id" value={store.engine_type_id} onChange={(v) => store.setField('engine_type_id', v)} options={engineTypes} loading={lookupsLoading} />
                 <Field label="Viscosity Grade" id="viscosity_grade" value={store.viscosity_grade} onChange={(v) => store.setField('viscosity_grade', v)} placeholder="5W-30" />
 
-                <Field label="Pack Size *" id="pack_size" type="number" value={store.pack_size} onChange={(v) => store.setField('pack_size', v)} placeholder="4.00" error={store.errors.pack_size} />
-                <Field label="Pack Unit *" id="pack_unit" value={store.pack_unit} onChange={(v) => store.setField('pack_unit', v)} placeholder="L" error={store.errors.pack_unit} />
-                <Field label="Price *" id="price" type="number" value={store.price} onChange={(v) => store.setField('price', v)} placeholder="3500.00" error={store.errors.price} />
+                <Field label="Pack Size" id="pack_size" type="number" value={store.pack_size} onChange={(v) => store.setField('pack_size', v)} placeholder="4.00" error={store.errors.pack_size} />
+                <Field label="Pack Unit" id="pack_unit" value={store.pack_unit} onChange={(v) => store.setField('pack_unit', v)} placeholder="L" error={store.errors.pack_unit} />
+                <Field label="Price" id="price" type="number" value={store.price} onChange={(v) => store.setField('price', v)} placeholder="3500.00" error={store.errors.price} />
                 <Field label="Discount Price" id="discount_price" type="number" value={store.discount_price} onChange={(v) => store.setField('discount_price', v)} placeholder="3200.00" />
-                <Field label="Stock Quantity *" id="stock_quantity" type="number" value={store.stock_quantity} onChange={(v) => store.setField('stock_quantity', v)} placeholder="100" error={store.errors.stock_quantity} />
+                <Field label="Stock Quantity" id="stock_quantity" type="number" value={store.stock_quantity} onChange={(v) => store.setField('stock_quantity', v)} placeholder="100" error={store.errors.stock_quantity} />
               </div>
 
               <div className="mt-5 space-y-1.5">

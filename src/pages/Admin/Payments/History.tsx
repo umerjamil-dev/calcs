@@ -1,7 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { CreditCard } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
+import { Pagination } from '@/components/Pagination'
 import { usePaymentStore } from '@/stores/usePaymentStore'
+
+const ITEMS_PER_PAGE = 10
 
 const formatDate = (dateStr: string) => {
   const d = new Date(dateStr)
@@ -10,10 +13,14 @@ const formatDate = (dateStr: string) => {
 
 const AdminPaymentHistory = () => {
   const { payments, loading, fetchPayments } = usePaymentStore()
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchPayments()
   }, [fetchPayments])
+
+  const totalPages = Math.ceil(payments.length / ITEMS_PER_PAGE)
+  const paginatedPayments = payments.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -58,9 +65,9 @@ const AdminPaymentHistory = () => {
                       </td>
                     </tr>
                   ) : (
-                    payments.map((p, index) => (
+                    paginatedPayments.map((p, index) => (
                       <tr key={p.id} className="transition-colors hover:bg-slate-50/50">
-                        <td className="px-5 py-3 text-slate-500">{index + 1}</td>
+                        <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                         <td className="px-5 py-3 font-medium text-slate-800">{p.order?.order_number || `Order #${p.order_id}`}</td>
                         <td className="px-5 py-3 text-slate-600">{p.user?.name || `User #${p.user_id}`}</td>
                         <td className="px-5 py-3 text-slate-600">{p.distributor?.name || `User #${p.distributor_id}`}</td>
@@ -74,6 +81,13 @@ const AdminPaymentHistory = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={payments.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
           </div>
         </main>
       </div>

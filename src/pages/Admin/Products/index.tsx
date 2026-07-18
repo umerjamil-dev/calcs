@@ -1,16 +1,23 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Search, Trash2, Edit3, Package, View } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Pagination } from '@/components/Pagination'
 import { useProductStore } from '@/stores/useProductStore'
+
+const ITEMS_PER_PAGE = 10
 
 const AdminProducts = () => {
   const { products, loading, deletingId, fetchProducts, deleteProduct } = useProductStore()
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchProducts()
   }, [fetchProducts])
+
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE)
+  const paginatedProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -77,7 +84,7 @@ const AdminProducts = () => {
                       </td>
                     </tr>
                   ) : (
-                    products.map((p) => (
+                    paginatedProducts.map((p) => (
                       <tr key={p.id} className="transition-colors hover:bg-slate-50/50">
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-3">
@@ -132,6 +139,13 @@ const AdminProducts = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={products.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
           </div>
         </main>
       </div>

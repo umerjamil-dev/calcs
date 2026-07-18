@@ -1,16 +1,24 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Search, Trash2, Users } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Pagination } from '@/components/Pagination'
 import { useRetailerStore } from '@/stores/useRetailerStore'
+
+const ITEMS_PER_PAGE = 10
 
 const AdminRetailers = () => {
   const { retailers, loading, deletingId, fetchRetailers, deleteRetailer } = useRetailerStore()
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     fetchRetailers()
   }, [fetchRetailers])
+
+  const filteredRetailers = retailers.filter((r) => r.role_id == 3)
+  const totalPages = Math.ceil(filteredRetailers.length / ITEMS_PER_PAGE)
+  const paginatedRetailers = filteredRetailers.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
   return (
     <div className="min-h-screen bg-slate-50">
       <AdminSidebar />
@@ -73,9 +81,9 @@ const AdminRetailers = () => {
                       </td>
                     </tr>
                   ) : (
-                    retailers.filter((r) => r.role_id ==3).map((r,i) => (
+                    paginatedRetailers.map((r, i) => (
                       <tr key={r.id} className="transition-colors hover:bg-slate-50/50">
-                        <td className="px-5 py-3 font-medium text-slate-800">{i+1}</td>
+                        <td className="px-5 py-3 font-medium text-slate-800">{(currentPage - 1) * ITEMS_PER_PAGE + i + 1}</td>
                         <td className="px-5 py-3 font-medium text-slate-800">{r.name}</td>
                         <td className="px-5 py-3 text-slate-600">{r.number}</td>
                         <td className="px-5 py-3 text-slate-600">{r.email}</td>
@@ -97,6 +105,13 @@ const AdminRetailers = () => {
                 </tbody>
               </table>
             </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filteredRetailers.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
           </div>
         </main>
       </div>
