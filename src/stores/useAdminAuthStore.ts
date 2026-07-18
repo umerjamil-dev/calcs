@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { useChatStore } from './useChatStore'
 
 interface AdminAuthState {
   email: string
@@ -41,7 +42,7 @@ export const useAdminAuthStore = create<AdminAuthState>()((set, get) => ({
         toast.error('Access is denied')
         return
       }
-
+      useChatStore.getState().subscribeToMessages()
       toast.success('Admin login successful!')
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('user', JSON.stringify(res.data.user))

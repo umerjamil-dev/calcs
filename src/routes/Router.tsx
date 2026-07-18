@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/protected-route'
 import { Login, Signup } from '../pages/Auth'
-import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminEditProduct, AdminProductDetail, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor, AdminOrders, AdminNewOrders, AdminAssignedOrders, AdminProcessingOrders, AdminShippedOrders, AdminDeliveredOrders, AdminCancelledOrders, AdminOrderDetail, AdminReceivePayment, AdminPaymentHistory, AdminOutstandingBalance, AdminNotifications, AdminNotificationDetail, AdminSettings } from '../pages/Admin'
+import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminEditProduct, AdminProductDetail, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor, AdminOrders, AdminNewOrders, AdminAssignedOrders, AdminProcessingOrders, AdminShippedOrders, AdminDeliveredOrders, AdminCancelledOrders, AdminOrderDetail, AdminReceivePayment, AdminPaymentHistory, AdminOutstandingBalance, AdminNotifications, AdminNotificationDetail, AdminSettings, AdminMessages } from '../pages/Admin'
 import { DistributorLogin, DistributorRequest } from '../pages/Distributor'
 
 const Router = () => {
@@ -42,6 +42,8 @@ const Router = () => {
       <Route path='/admin/notifications' element={<ProtectedRoute><AdminNotifications /></ProtectedRoute>} />
       <Route path='/admin/notifications/:id' element={<ProtectedRoute><AdminNotificationDetail /></ProtectedRoute>} />
       <Route path='/admin/settings' element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+      <Route path='/admin/messages' element={<ProtectedRoute><AdminMessages /></ProtectedRoute>} />
+      <Route path='/admin/messages/unread' element={<ProtectedRoute><AdminMessages /></ProtectedRoute>} />
       
       {/* Distributor */}
       <Route path='/distributor/login' element={<DistributorLogin />} />
