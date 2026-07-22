@@ -15,6 +15,7 @@ const statusBadge = (status: string) => {
   const map: Record<string, string> = {
     pending: 'bg-amber-50 text-amber-700',
     confirmed: 'bg-blue-50 text-blue-700',
+    accepted: 'bg-emerald-50 text-blue-700',
     assigned: 'bg-indigo-50 text-indigo-700',
     processing: 'bg-purple-50 text-purple-700',
     shipped: 'bg-cyan-50 text-cyan-700',
@@ -96,7 +97,7 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
                       const retailer = getUserById(order.user_id)
                       const distributor = getUserById(order.distributor_id)
                       return (
-                        <tr key={order.id} className="transition-colors hover:bg-slate-50/50">
+                        <tr key={order.id} className="cursor-pointer transition-colors hover:bg-slate-50/50" onClick={() => window.location.href = `/admin/orders/${order.id}`}>
                           <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                           <td className="px-5 py-3 font-medium text-slate-800">{order.order_number}</td>
                           <td className="px-5 py-3 text-slate-600">{retailer?.name || `User #${order.user_id}`}</td>
@@ -109,12 +110,11 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
                           </td>
                           <td className="px-5 py-3 text-slate-500">{formatDate(order.order_date)}</td>
                           <td className="px-5 py-3 text-right">
-                            <a
-                              href={`/admin/orders/${order.id}`}
+                            <span
                               className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition-colors hover:bg-slate-100"
                             >
                               <Eye size={14} />
-                            </a>
+                            </span>
                           </td>
                         </tr>
                       )

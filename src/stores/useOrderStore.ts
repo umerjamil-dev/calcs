@@ -88,6 +88,7 @@ export const useOrderStore = create<OrderState>()((set, get) => ({
   updateOrderStatus: async (id, status) => {
     set({ updating: true })
     try {
+      console.log('Updating order status:', id, status)
       await api.post(`distributor/orders/change-status`, { status: status, order_id: id })
       toast.success(`Order status updated to ${status}`)
       get().fetchOrders()

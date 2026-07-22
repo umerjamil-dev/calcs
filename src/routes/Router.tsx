@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { ProtectedRoute } from '@/components/protected-route'
 import { Login, Signup } from '../pages/Auth'
-import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminEditProduct, AdminProductDetail, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor, AdminOrders, AdminNewOrders, AdminAssignedOrders, AdminProcessingOrders, AdminShippedOrders, AdminDeliveredOrders, AdminCancelledOrders, AdminOrderDetail, AdminReceivePayment, AdminPaymentHistory, AdminOutstandingBalance, AdminNotifications, AdminNotificationDetail, AdminSettings, AdminMessages } from '../pages/Admin'
+import { AdminLogin, AdminDashboard, AdminProducts, AdminAddProduct, AdminEditProduct, AdminProductDetail, AdminBrands, AdminCategories, AdminSubcategories, AdminProductTypes, AdminEngineTypes, AdminRetailers, AdminAddRetailer, AdminDistributors, AdminAddDistributor, AdminOrders, AdminNewOrders, AdminAcceptedOrders, AdminAssignedOrders, AdminProcessingOrders, AdminShippedOrders, AdminDeliveredOrders, AdminCancelledOrders, AdminOrderDetail, AdminReceivePayment, AdminPaymentHistory, AdminOutstandingBalance, AdminNotifications, AdminNotificationDetail, AdminSettings, AdminMessages } from '../pages/Admin'
 import { DistributorLogin, DistributorRequest } from '../pages/Distributor'
 
 const Router = () => {
@@ -30,6 +30,7 @@ const Router = () => {
       <Route path='/admin/distributors/add' element={<ProtectedRoute><AdminAddDistributor /></ProtectedRoute>} />
       <Route path='/admin/orders' element={<ProtectedRoute><AdminOrders /></ProtectedRoute>} />
       <Route path='/admin/orders/new' element={<ProtectedRoute><AdminNewOrders /></ProtectedRoute>} />
+      <Route path='/admin/orders/accepted' element={<ProtectedRoute><AdminAcceptedOrders /></ProtectedRoute>} />
       <Route path='/admin/orders/assigned' element={<ProtectedRoute><AdminAssignedOrders /></ProtectedRoute>} />
       <Route path='/admin/orders/processing' element={<ProtectedRoute><AdminProcessingOrders /></ProtectedRoute>} />
       <Route path='/admin/orders/shipped' element={<ProtectedRoute><AdminShippedOrders /></ProtectedRoute>} />

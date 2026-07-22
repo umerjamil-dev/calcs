@@ -8,7 +8,7 @@ export interface DashboardStats {
   total_products: number
   total_orders: number
   pending_orders: number
-  confirm_orders: number
+  accepted_orders: number
   processing_orders: number
   shipped_orders: number
   delivered_orders: number
@@ -31,7 +31,7 @@ const initialStats: DashboardStats = {
   total_products: 0,
   total_orders: 0,
   pending_orders: 0,
-  confirm_orders: 0,
+  accepted_orders: 0,
   processing_orders: 0,
   shipped_orders: 0,
   delivered_orders: 0,

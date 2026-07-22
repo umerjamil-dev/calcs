@@ -35,7 +35,7 @@ const AdminDashboard = () => {
 
   const orders = [
     { label: 'Pending', value: stats.pending_orders },
-    { label: 'Confirmed', value: stats.confirm_orders },
+    { label: 'Accepted', value: stats.accepted_orders },
     { label: 'Processing', value: stats.processing_orders },
     { label: 'Shipped', value: stats.shipped_orders },
     { label: 'Delivered', value: stats.delivered_orders },

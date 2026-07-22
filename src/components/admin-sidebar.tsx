@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { logo } from '@/assets'
 import { cn } from '@/lib/utils'
+import { useChatStore } from '@/stores/useChatStore'
 
 interface SubItem {
   label: string
@@ -66,6 +67,7 @@ const menuItems: MenuItem[] = [
     children: [
       { label: 'All Orders', path: '/admin/orders' },
       { label: 'New Orders', path: '/admin/orders/new' },
+      { label: 'Accepted Orders', path: '/admin/orders/accepted' },
       { label: 'Assigned Orders', path: '/admin/orders/assigned' },
       { label: 'Processing Orders', path: '/admin/orders/processing' },
       { label: 'Shipped Orders', path: '/admin/orders/shipped' },
@@ -89,7 +91,6 @@ const menuItems: MenuItem[] = [
    
     children: [
       { label: 'All Messages', path: '/admin/messages' },
-      { label: 'Unread Messages', path: '/admin/messages/unread' },
     ],
   },
   // {
@@ -107,6 +108,15 @@ const menuItems: MenuItem[] = [
 
 export function AdminSidebar() {
   const location = useLocation()
+  const { users, fetchUsers } = useChatStore()
+  const totalUnread = users.reduce((sum, u) => sum + (u.unread_count || 0), 0)
+
+  useEffect(() => {
+    fetchUsers()
+    const interval = setInterval(fetchUsers, 10000)
+    return () => clearInterval(interval)
+  }, [])
+
   const [open, setOpen] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {}
     menuItems.forEach((item) => {
@@ -141,6 +151,11 @@ export function AdminSidebar() {
             <span className="flex items-center gap-3">
               <span className="text-muted-foreground">{item.icon}</span>
               {item.label}
+              {item.label === 'Messages' && totalUnread > 0 && (
+                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#E7002B] px-1.5 text-[10px] font-semibold text-white">
+                  {totalUnread}
+                </span>
+              )}
             </span>
             <ChevronDown size={16} className={cn('text-muted-foreground transition-transform', isOpen && 'rotate-180')} />
           </button>

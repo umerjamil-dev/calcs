@@ -37,7 +37,7 @@ const AdminSettings = () => {
                 <h2 className="text-base font-semibold text-slate-800">Profile Information</h2>
                 <p className="text-xs text-slate-500">Your account details</p>
               </div>
-
+ 
               <div className="p-6">
                 <div className="mb-6 flex items-center gap-4">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-main/10 text-primary-main">
