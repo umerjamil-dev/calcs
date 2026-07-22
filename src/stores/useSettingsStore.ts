@@ -7,7 +7,7 @@ export interface UserProfile {
   name: string
   email: string
   number: string
-  role_id: number
+  roles: number
   company_name?: string | null
   address?: string | null
 }
@@ -31,10 +31,9 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   fetchProfile: async () => {
     set({ loading: true })
     try {
-      const stored = localStorage.getItem('user')
-      if (stored) {
-        set({ user: JSON.parse(stored) })
-      }
+      const res = await api.get('/profile/1')
+      const data = res.data.data || res.data.user || res.data
+      set({ user: data })
     } catch {
       set({ user: null })
     } finally {
@@ -42,6 +41,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     }
   },
 
+  
   updateProfile: async (data) => {
     set({ updating: true })
     try {

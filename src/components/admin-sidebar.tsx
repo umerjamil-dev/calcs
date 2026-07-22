@@ -13,6 +13,8 @@ import {
   X,
   User,
   MessageCircleCheckIcon,
+  LucideCreditCard,
+  ReceiptPoundSterling,
 } from 'lucide-react'
 import { logo } from '@/assets'
 import { cn } from '@/lib/utils'
@@ -93,16 +95,19 @@ const menuItems: MenuItem[] = [
       { label: 'All Messages', path: '/admin/messages' },
     ],
   },
-  // {
-  //   label: 'Inventory',
-  //   icon: <Warehouse size={18} />,
-  //   children: [
-  //     { label: 'Stock', path: '/admin/inventory/stock' },
-  //     { label: 'Low Stock', path: '/admin/inventory/low-stock' },
-  //     { label: 'Stock History', path: '/admin/inventory/history' },
-  //   ],
-  // }, 
-  { label: 'Complians', icon: <Bell size={18} />, path: '/admin/notifications' },
+  {
+    label: 'Reports',
+    icon: <ReceiptPoundSterling size={18} />,
+    children: [
+      { label: 'Sales Report', path: '/admin/reports/sales' },
+{ label: 'Order Report', path: '/admin/reports/orders' },
+{ label: 'Payment Report', path: '/admin/reports/payments' },
+{ label: 'Retailer Report', path: '/admin/reports/retailers' },
+{ label: 'Distributor Report', path: '/admin/reports/distributors' },
+    ],
+    
+  }, 
+  { label: 'Complains', icon: <Bell size={18} />, path: '/admin/notifications' },
   { label: 'Profile', icon: <User size={18} />, path: '/admin/settings' },
 ]
 
