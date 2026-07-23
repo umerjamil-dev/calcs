@@ -13,11 +13,11 @@ const AdminRetailersReport = () => {
       <AdminSidebar />
       <div className="lg:ml-64">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="mx-auto flex max-w-[1620px] items-center justify-between">
             <h1 className="text-lg font-semibold text-slate-800">Retailer Report</h1>
           </div>
         </header>
-        <main className="mx-auto max-w-7xl px-6 py-6">
+        <main className="mx-auto max-w-[1620px] px-6 py-6">
           <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
             <h2 className="mb-4 text-sm font-semibold text-slate-800">Filters</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

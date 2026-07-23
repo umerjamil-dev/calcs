@@ -56,7 +56,7 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
 
       <div className="lg:ml-64">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="mx-auto flex max-w-[1620px] items-center justify-between">
             <h1 className="text-lg font-semibold text-slate-800">{title}</h1>
             <p className="text-sm text-slate-500">{filtered.length} orders</p>
           </div>

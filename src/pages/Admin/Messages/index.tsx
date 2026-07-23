@@ -157,7 +157,7 @@ export default function Messages() {
       {/* Desktop */}
       <div className="hidden lg:ml-64 lg:block">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="mx-auto flex max-w-[1620px] items-center justify-between">
             <h1 className="text-lg font-semibold text-slate-800">{isUnreadFilter ? 'Unread Messages' : 'Messages'}</h1>
             <p className="text-sm text-slate-500">{users.length} distributors</p>
           </div>

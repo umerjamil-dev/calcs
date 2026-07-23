@@ -43,7 +43,7 @@ export const useNotificationStore = create<NotificationState>()((set) => ({
   updateNotificationStatus: async (id: number, status: string) => {
     set({ updating: true })
     try {
-      await api.put(`/retailer-complaints/${id}`, { status })
+      await api.put(`/complaints/status/${id}`, { status })
       toast.success('Status updated successfully')
       set((state) => ({
         notifications: state.notifications.map((n) =>

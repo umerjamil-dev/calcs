@@ -37,7 +37,7 @@ export function LookupManager({ title, endpoint }: LookupManagerProps) {
 
       <div className="lg:ml-64">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="mx-auto flex max-w-[1620px] items-center justify-between">
             <h1 className="text-lg font-semibold text-slate-800">{title}</h1>
             <span className="rounded-full bg-primary-main/10 px-3 py-1 text-xs font-medium text-primary-main">
               {items.length} {label}s
@@ -45,7 +45,7 @@ export function LookupManager({ title, endpoint }: LookupManagerProps) {
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 py-6">
+        <main className="mx-auto max-w-[1620px] px-6 py-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Add form */}
             <section className="lg:col-span-1">

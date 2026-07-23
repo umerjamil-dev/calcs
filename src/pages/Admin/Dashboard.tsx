@@ -62,7 +62,7 @@ const AdminDashboard = () => {
       <div className="lg:ml-64">
         {/* Top bar */}
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="mx-auto flex max-w-[1620px] items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-slate-500">
               <CalendarDays size={16} />
               <span>{new Date().toLocaleDateString('en-PK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        <main className="mx-auto max-w-8xl px-6 py-6">
+        <main className="mx-auto max-w-[1620px] px-6 py-6">
           {/* Welcome banner */}
           <div className="relative mb-6 overflow-hidden rounded-2xl bg-primary-main px-6 py-8 text-white shadow-md">
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/5" />

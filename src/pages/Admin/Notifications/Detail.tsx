@@ -34,7 +34,7 @@ const AdminNotificationDetail = () => {
 
       <div className="lg:ml-64">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-          <div className="mx-auto flex max-w-7xl items-center gap-3">
+          <div className="mx-auto flex max-w-[1620px] items-center gap-3">
             <button
               onClick={() => navigate('/admin/notifications')}
               className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100"
@@ -45,7 +45,7 @@ const AdminNotificationDetail = () => {
           </div>
         </header>
 
-        <main className="mx-auto  px-6 py-6">
+        <main className="mx-auto max-w-[1620px] px-6 py-6">
           {!notification ? (
             <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
               <p className="text-sm text-slate-500">Complaint not found</p>
@@ -81,6 +81,31 @@ const AdminNotificationDetail = () => {
                   <div>
                     <p className="text-xs font-medium text-slate-500">Updated</p>
                     <p className="text-sm text-slate-800">{formatDate(notification.updated_at)}</p>
+                  </div>
+                </div>
+
+                {/* Change Status */}
+                <div className="mt-6 border-t border-slate-200 pt-4">
+                  <p className="mb-2 text-xs font-medium text-slate-500">Change Status</p>
+                  <div className="flex gap-2">
+                    <select
+                      value={newStatus}
+                      onChange={(e) => setNewStatus(e.target.value)}
+                      className="h-9 flex-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none"
+                    >
+                      <option value="">Select Status</option>
+                      <option value="pending">Pending</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="resolved">Resolved</option>
+                      <option value="closed">Closed</option>
+                    </select>
+                    <Button
+                      onClick={handleStatusChange}
+                      disabled={updating || !newStatus}
+                      className="h-9 cursor-pointer rounded-lg bg-primary-main px-4 text-sm font-medium text-white hover:bg-primary-main/90 disabled:opacity-60"
+                    >
+                      {updating ? 'Updating...' : 'Update'}
+                    </Button>
                   </div>
                 </div>
               </div>

@@ -48,7 +48,7 @@ const AdminOrderDetail = () => {
         <AdminSidebar />
         <div className="lg:ml-64">
           <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-            <div className="mx-auto flex max-w-7xl items-center gap-3">
+            <div className="mx-auto flex max-w-[1620px] items-center gap-3">
               <button onClick={() => navigate(-1)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100">
                 <ArrowLeft size={16} />
               </button>
@@ -106,7 +106,7 @@ const AdminOrderDetail = () => {
 
       <div className="lg:ml-64">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="mx-auto flex max-w-[1620px] items-center justify-between">
             <div className="flex items-center gap-3">
               <button onClick={() => navigate(-1)} className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100">
                 <ArrowLeft size={16} />
@@ -124,7 +124,7 @@ const AdminOrderDetail = () => {
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 py-6">
+        <main className="mx-auto max-w-[1620px] px-6 py-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Left: Order Info + Products */}
             <div className="space-y-6 lg:col-span-2">
@@ -253,6 +253,26 @@ const AdminOrderDetail = () => {
                 ) : (
                   <p className="text-sm text-slate-500">User #{order.user_id}</p>
                 )}
+
+                {/* Customer Information - Show only if different from retailer */}
+                {order.customer_name && order.customer_name !== retailer?.name && (
+                  <>
+                    <div className="my-3 border-t border-slate-200" />
+                    <div className="mb-2 flex items-center gap-2">
+                      <Users size={14} className="text-slate-500" />
+                      <h3 className="text-xs font-semibold text-slate-700">Customer Information</h3>
+                    </div>
+                    <div className="space-y-1.5 text-sm">
+                      <p className="font-medium text-slate-800"><span className="font-semibold">Customer Name:</span> {order.customer_name}</p>
+                      {order.customer_number && order.customer_number !== retailer?.number && (
+                        <p className="text-slate-600"><span className="font-semibold">Customer Number:</span> {order.customer_number}</p>
+                      )}
+                      {order.customer_address && order.customer_address !== retailer?.address && (
+                        <p className="text-slate-600"><span className="font-semibold">Customer Address:</span> {order.customer_address}</p>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Distributor */}
@@ -284,6 +304,7 @@ const AdminOrderDetail = () => {
                     <div className="space-y-1.5 text-sm">
                       <p className="font-medium text-slate-800"><span className="font-semibold">Driver Name:</span> {order.driver_name}</p>
                       <p className="text-slate-600"><span className="font-semibold">Driver Number:</span> {order.driver_number}</p>
+                      <p className="text-slate-600"><span className="font-semibold">Driver Vehicle Number:</span> {order.vehicle_number}</p>
                       {order.expected_delivery && (
                         <p className="text-slate-600"><span className="font-semibold">Expected Delivery:</span> {formatDate(order.expected_delivery)}</p>
                       )}

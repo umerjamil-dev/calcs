@@ -44,12 +44,12 @@ const AdminUserSettings = () => {
 
       <div className="lg:ml-64">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <div className="mx-auto flex max-w-[1620px] items-center justify-between">
             <h1 className="text-lg font-semibold text-slate-800">User Settings</h1>
           </div>
         </header>
 
-        <main className="mx-auto  px-6 py-6">
+        <main className="mx-auto max-w-[1620px] px-6 py-6">
           {/* Tabs */}
           <div className="mb-6 flex gap-2 border-b border-slate-200">
             <button
