@@ -213,7 +213,7 @@ const AdminDashboard = () => {
                           <tr key={o.id} className="transition-colors hover:bg-slate-50/50">
                             <td className="px-5 py-3 font-medium text-slate-800">{o.order_number}</td>
                             <td className="px-5 py-3 text-slate-600">{retailer?.name || `User #${o.user_id}`}</td>
-                            <td className="px-5 py-3 text-slate-600">{distributor?.name || `User #${o.distributor_id}`}</td>
+                            <td className="px-5 py-3 text-slate-600">{distributor?.name || `Not Assigned`}</td>
                             <td className="px-5 py-3 font-medium text-slate-800">Rs {Number(o.total_amount).toLocaleString('en-PK')}</td>
                             <td className="px-5 py-3">
                               <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium capitalize text-slate-700">

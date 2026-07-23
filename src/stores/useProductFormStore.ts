@@ -187,14 +187,15 @@ export const useProductFormStore = create<ProductFormState>()((set, get) => ({
         formData.append('gallery_images[]', file)
       })
 
-      data.removedExistingImages.forEach((url) => {
-        formData.append('removed_images[]', url)
-      })
+     data.removedExistingImages.forEach((url) => {
+  formData.append('removed_images[]', url)
+})
 
-      formData.append('_method', 'PUT')
+formData.append('_method', 'PUT')
 
-      await api.post(`/products/${id}`, formData)
-      toast.success('Product updated successfully')
+await api.post(`/products/${id}`, formData)
+
+toast.success('Product updated successfully')
       return true
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to update product')

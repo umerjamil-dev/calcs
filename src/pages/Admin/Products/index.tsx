@@ -11,13 +11,22 @@ const ITEMS_PER_PAGE = 10
 const AdminProducts = () => {
   const { products, loading, deletingId, fetchProducts, deleteProduct } = useProductStore()
   const [currentPage, setCurrentPage] = useState(1)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     fetchProducts()
   }, [fetchProducts])
 
-  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE)
-  const paginatedProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+  const filtered = search
+    ? products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(search.toLowerCase()) ||
+          p.p_code.toLowerCase().includes(search.toLowerCase())
+      )
+    : products
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
+  const paginatedProducts = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -45,9 +54,11 @@ const AdminProducts = () => {
                 type="text"
                 placeholder="Search products by name or code..."
                 className="h-10 rounded-lg border-slate-200 pl-10"
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setCurrentPage(1) }}
               />
             </div>
-            <p className="text-sm text-slate-500">{products.length} products found</p>
+            <p className="text-sm text-slate-500">{filtered.length} products found</p>
           </div>
 
           {/* Products table */}
@@ -143,7 +154,7 @@ const AdminProducts = () => {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={setCurrentPage}
-              totalItems={products.length}
+              totalItems={filtered.length}
               itemsPerPage={ITEMS_PER_PAGE}
             />
           </div>

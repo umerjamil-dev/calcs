@@ -30,11 +30,13 @@ interface RetailerState extends RetailerFormData {
   loading: boolean
   adding: boolean
   deletingId: number | null
+  resettingId: number | null
   errors: Record<string, string | undefined>
   setField: (field: keyof RetailerFormData, value: string) => void
   fetchRetailers: () => Promise<void>
   addRetailer: () => Promise<boolean>
   deleteRetailer: (id: number) => Promise<void>
+  resetPassword: (userId: number, password: string, passwordConfirmation: string) => Promise<boolean>
   resetForm: () => void
 }
 
@@ -55,6 +57,7 @@ export const useRetailerStore = create<RetailerState>()((set, get) => ({
   loading: false,
   adding: false,
   deletingId: null,
+  resettingId: null,
   errors: {},
 
   setField: (field, value) =>
@@ -128,6 +131,23 @@ export const useRetailerStore = create<RetailerState>()((set, get) => ({
       toast.error(err.response?.data?.message || 'Failed to delete retailer')
     } finally {
       set({ deletingId: null })
+    }
+  },
+
+  resetPassword: async (userId, password, passwordConfirmation) => {
+    set({ resettingId: userId })
+    try {
+      await api.post(`/users/${userId}/reset-password`, {
+        password,
+        password_confirmation: passwordConfirmation,
+      })
+      toast.success('Password reset successfully')
+      return true
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to reset password')
+      return false
+    } finally {
+      set({ resettingId: null })
     }
   },
 

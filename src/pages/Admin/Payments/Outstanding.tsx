@@ -13,7 +13,7 @@ const AdminOutstandingBalance = () => {
   useEffect(() => {
     fetchBalances()
   }, [fetchBalances])
-
+ console.log("blances is here ",balances)
   const totalPages = Math.ceil(balances.length / ITEMS_PER_PAGE)
   const paginatedBalances = balances.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
   return (
@@ -39,8 +39,9 @@ const AdminOutstandingBalance = () => {
                     <th className="px-5 py-3 font-medium">Distributor</th>
                     <th className="px-5 py-3 font-medium">Total Orders</th>
                     <th className="px-5 py-3 font-medium">Total Amount</th>
-                    <th className="px-5 py-3 font-medium">Total Payments</th>
-                    <th className="px-5 py-3 font-medium">Balance</th>
+                    <th className="px-5 py-3 font-medium">Paid Amount</th>
+                    <th className="px-5 py-3 font-medium">Remaining Amount</th>
+                    <th className="px-5 py-3 font-medium">Payment Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -62,7 +63,7 @@ const AdminOutstandingBalance = () => {
                       <tr key={`${b.user_id}-${b.distributor_id}`} className="transition-colors hover:bg-slate-50/50">
                         <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                         <td className="px-5 py-3 font-medium text-slate-800">{b.user?.name || `User #${b.user_id}`}</td>
-                        <td className="px-5 py-3 text-slate-600">{b.distributor?.name || `User #${b.distributor_id}`}</td>
+                        <td className="px-5 py-3 text-slate-600">{b.distributor?.name || `not assigned`}</td>
                         <td className="px-5 py-3 text-slate-600">{b.total_orders}</td>
                         <td className="px-5 py-3 text-slate-600">Rs {Number(b.total_amount).toLocaleString('en-PK')}</td>
                         <td className="px-5 py-3 text-slate-600">Rs {Number(b.total_payments).toLocaleString('en-PK')}</td>
@@ -70,6 +71,9 @@ const AdminOutstandingBalance = () => {
                           <span className={`font-medium ${b.balance > 0 ? 'text-red-600' : 'text-green-600'}`}>
                             Rs {Number(b.balance).toLocaleString('en-PK')}
                           </span>
+                        </td>
+                        <td className='px-5 py-3 text-slate-500'>
+                          {b.payment_status}
                         </td>
                       </tr>
                     ))

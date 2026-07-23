@@ -33,12 +33,13 @@ const AdminOrderDetail = () => {
   const [selectedDistributor, setSelectedDistributor] = useState('')
   const [showStatusChange, setShowStatusChange] = useState(false)
   const [newStatus, setNewStatus] = useState('')
+  const [showSlipModal, setShowSlipModal] = useState(false)
 
   useEffect(() => {
     fetchOrders()
     if (users.length === 0) fetchUsers()
   }, [fetchOrders, fetchUsers, users.length])
-
+ console.log("detailedorders",orders);
   const order = orders.find((o) => o.id === Number(id))
   if (!order && !loading) {
 
@@ -54,7 +55,7 @@ const AdminOrderDetail = () => {
               <h1 className="text-lg font-semibold text-slate-800">Order Not Found</h1>
             </div>
           </header>
-          <main className="mx-auto max-w-7xl px-6 py-12 text-center text-slate-500">
+          <main className="mx-auto  px-6 py-12 text-center text-slate-500">
             The order you are looking for does not exist.
           </main>
         </div>
@@ -67,7 +68,7 @@ const AdminOrderDetail = () => {
       <div className="min-h-screen bg-slate-50">
         <AdminSidebar />
         <div className="lg:ml-64">
-          <main className="mx-auto max-w-7xl px-6 py-12 text-center text-slate-500">Loading...</main>
+          <main className="mx-auto  px-6 py-12 text-center text-slate-500">Loading...</main>
         </div>
       </div>
     )
@@ -78,6 +79,7 @@ const AdminOrderDetail = () => {
   const distributors = users.filter((u) => u.role_id === 2)
   const currentStep = statusSteps.indexOf(order.status)
   const isCancelled = order.status === 'cancelled'
+  const nextStatus = currentStep < statusSteps.length - 1 ? statusSteps[currentStep + 1] : null
 
   const handleAssign = async () => {
     if (!selectedDistributor) return
@@ -138,25 +140,49 @@ const AdminOrderDetail = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between">
-                    {statusSteps.map((step, i) => {
-                      const isComplete = i <= currentStep
-                      const isCurrent = i === currentStep
-                      return (
-                        <div key={step} className="flex flex-1 items-center">
-                          <div className="flex flex-col items-center">
-                            <div className={`flex h-8 w-8 items-center justify-center rounded-full border-2 ${isComplete ? 'border-primary-main bg-primary-main text-white' : 'border-slate-200 bg-white text-slate-400'} ${isCurrent ? 'ring-2 ring-primary-main/20' : ''}`}>
-                              {isComplete ? <CheckCircle size={16} /> : <span className="text-xs">{i + 1}</span>}
+                  <>
+                    {/* Desktop: Horizontal */}
+                    <div className="hidden items-center justify-between md:flex">
+                      {statusSteps.map((step, i) => {
+                        const isComplete = i <= currentStep
+                        const isCurrent = i === currentStep
+                        return (
+                          <div key={step} className="flex flex-1 items-center">
+                            <div className="flex flex-col items-center">
+                              <div className={`flex h-8 w-8 items-center justify-center rounded-full border-2 ${isComplete ? 'border-primary-main bg-primary-main text-white' : 'border-slate-200 bg-white text-slate-400'} ${isCurrent ? 'ring-2 ring-primary-main/20' : ''}`}>
+                                {isComplete ? <CheckCircle size={16} /> : <span className="text-xs">{i + 1}</span>}
+                              </div>
+                              <span className={`mt-1 text-xs capitalize ${isComplete ? 'font-medium text-slate-700' : 'text-slate-400'}`}>{step}</span>
                             </div>
-                            <span className={`mt-1 text-xs capitalize ${isComplete ? 'font-medium text-slate-700' : 'text-slate-400'}`}>{step}</span>
+                            {i < statusSteps.length - 1 && (
+                              <div className={`mx-1 h-0.5 flex-1 ${i < currentStep ? 'bg-primary-main' : 'bg-slate-200'}`} />
+                            )}
                           </div>
-                          {i < statusSteps.length - 1 && (
-                            <div className={`mx-1 h-0.5 flex-1 ${i < currentStep ? 'bg-primary-main' : 'bg-slate-200'}`} />
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* Mobile: Vertical */}
+                    <div className="space-y-3 md:hidden">
+                      {statusSteps.map((step, i) => {
+                        const isComplete = i <= currentStep
+                        const isCurrent = i === currentStep
+                        return (
+                          <div key={step} className="flex items-center gap-3">
+                            <div className="flex flex-col items-center">
+                              <div className={`flex h-8 w-8 items-center justify-center rounded-full border-2 ${isComplete ? 'border-primary-main bg-primary-main text-white' : 'border-slate-200 bg-white text-slate-400'} ${isCurrent ? 'ring-2 ring-primary-main/20' : ''}`}>
+                                {isComplete ? <CheckCircle size={16} /> : <span className="text-xs">{i + 1}</span>}
+                              </div>
+                              {i < statusSteps.length - 1 && (
+                                <div className={`mt-1 h-4 w-0.5 ${i < currentStep ? 'bg-primary-main' : 'bg-slate-200'}`} />
+                              )}
+                            </div>
+                            <span className={`text-sm capitalize ${isComplete ? 'font-medium text-slate-700' : 'text-slate-400'}`}>{step}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </>
                 )}
               </div>
 
@@ -208,11 +234,9 @@ const AdminOrderDetail = () => {
                   <p className="text-sm text-slate-600">{order.notes}</p>
                 </div>
               )}
-            </div>
 
-            {/* Right: Parties + Actions */}
-            <div className="space-y-6">
-              {/* Retailer */}
+              <div className='grid grid-cols-2 gap-6'>
+                {/* Retailer */}
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2">
                   <Users size={16} className="text-slate-500" />
@@ -248,10 +272,51 @@ const AdminOrderDetail = () => {
                 ) : (
                   <p className="text-sm text-slate-500">Not assigned yet</p>
                 )}
-              </div>
 
+                {/* Driver Information - Processing and beyond */}
+                {(order.status === 'processing' || order.status === 'shipped' || order.status === 'delivered') && order.driver_name && (
+                  <>
+                    <div className="my-3 border-t border-slate-200" />
+                    <div className="mb-2 flex items-center gap-2">
+                      <Truck size={14} className="text-slate-500" />
+                      <h3 className="text-xs font-semibold text-slate-700">Driver Information</h3>
+                    </div>
+                    <div className="space-y-1.5 text-sm">
+                      <p className="font-medium text-slate-800"><span className="font-semibold">Driver Name:</span> {order.driver_name}</p>
+                      <p className="text-slate-600"><span className="font-semibold">Driver Number:</span> {order.driver_number}</p>
+                      {order.expected_delivery && (
+                        <p className="text-slate-600"><span className="font-semibold">Expected Delivery:</span> {formatDate(order.expected_delivery)}</p>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+              </div>
+            </div>
+
+            {/* Right: Order Info + Statement Slip + Actions */}
+            <div className="space-y-6">
               {/* Order Info */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+             
+
+              {/* Statement Slip - Only for delivered orders */}
+              {order.status === 'delivered' && order.statement_slip && (
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="mb-3 flex items-center gap-2">
+                    <Package size={16} className="text-slate-500" />
+                    <h2 className="text-sm font-semibold text-slate-800">Statement Slip</h2>
+                  </div>
+                  <div className="rounded-lg border border-slate-200">
+                    <img
+                      src={order.statement_slip}
+                      alt="Statement Slip"
+                      className=" object-contain mx-auto h-[38vh] cursor-pointer "
+                      onClick={() => setShowSlipModal(true)}
+                    />
+                  </div>
+                </div>
+              )}
+ <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2">
                   <Package size={16} className="text-slate-500" />
                   <h2 className="text-sm font-semibold text-slate-800">Order Info</h2>
@@ -271,7 +336,6 @@ const AdminOrderDetail = () => {
                   </div>
                 </div>
               </div>
-
               {/* Actions */}
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2">
@@ -279,8 +343,8 @@ const AdminOrderDetail = () => {
                   <h2 className="text-sm font-semibold text-slate-800">Actions</h2>
                 </div>
                 <div className="space-y-3">
-                  {/* Assign Distributor */}
-                  
+                  {/* Assign Distributor - Only when accepted */}
+                  {order.status === 'accepted' && (
                     <div>
                       {!showAssign ? (
                         <Button onClick={() => setShowAssign(true)} className="h-9 w-full cursor-pointer rounded-lg bg-primary-main text-sm font-medium text-white hover:bg-primary-main/90">
@@ -309,39 +373,32 @@ const AdminOrderDetail = () => {
                         </div>
                       )}
                     </div>
-                  
+                  )}
 
-                  {/* Change Status */}
-                  {!isCancelled && order.status !== 'delivered' && (
-                    <div>
-                      {!showStatusChange ? (
-                        <Button onClick={() => setShowStatusChange(true)} className="h-9 w-full cursor-pointer rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50">
-                          Change Status
-                        </Button>
-                      ) : (
-                        <div className="space-y-2">
-                          <select
-                            value={newStatus}
-                            onChange={(e) => setNewStatus(e.target.value)}
-                            className="h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none"
-                          >
-                            <option value="">Select Status</option>
-                            {statusSteps.map((s) => (
-                              <option key={s} value={s} className="capitalize">{s}</option>
-                            ))}
-                            <option value="cancelled">cancelled</option>
-                          </select>
-                          <div className="flex gap-2">
-                            <Button onClick={handleStatusChange} disabled={updating || !newStatus} className="h-8 flex-1 cursor-pointer rounded-lg bg-primary-main text-xs font-medium text-white hover:bg-primary-main/90 disabled:opacity-60">
-                              {updating ? 'Updating...' : 'Update'}
-                            </Button>
-                            <Button onClick={() => setShowStatusChange(false)} className="h-8 flex-1 cursor-pointer rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-slate-50">
-                              Cancel
-                            </Button>
-                          </div>
-                        </div>
-                      )}
+                  {/* After Assignment - Distributor Working */}
+                  {order.status !== 'pending' && order.status !== 'accepted' && !isCancelled && (
+                    <div className="rounded-lg bg-indigo-50 p-3 text-center">
+                      <p className="text-xs font-medium text-indigo-700">
+                        Distributor is working on this order
+                      </p>
                     </div>
+                  )}
+
+                  {/* Change Status - Only for pending to accepted */}
+                  {order.status === 'pending' && (
+                    <Button
+                      onClick={async () => {
+                        const success = await updateOrderStatus(order.id, 'accepted')
+                        if (success) setNewStatus('')
+                      }}
+                      disabled={updating}
+                      className="h-9 w-full cursor-pointer rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+                    >
+                      {updating ? 'Updating...' : 'Mark as Accepted'}
+                    </Button>
+                  )}
+                  {!isCancelled && order.status === 'delivered' && (
+                    <p className="text-center text-xs text-slate-400">Order completed</p>
                   )}
                 </div>
               </div>
@@ -349,6 +406,29 @@ const AdminOrderDetail = () => {
           </div>
         </main>
       </div>
+
+      {/* Statement Slip Modal */}
+      {showSlipModal && order.statement_slip && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setShowSlipModal(false)}
+        >
+          <div className="relative max-h-[90vh] max-w-5xl">
+            <button
+              onClick={() => setShowSlipModal(false)}
+              className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-600 shadow-lg hover:bg-slate-100"
+            >
+              <XCircle size={20} />
+            </button>
+            <img
+              src={order.statement_slip}
+              alt="Statement Slip"
+              className="max-h-[70vh] w-auto rounded-lg object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -62,7 +62,7 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
           </div>
         </header>
 
-        <main className="mx-auto max-w-7xl px-6 py-6">
+        <main className="mx-auto max-w-8xl px-6 py-6">
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
@@ -101,7 +101,7 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
                           <td className="px-5 py-3 text-slate-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                           <td className="px-5 py-3 font-medium text-slate-800">{order.order_number}</td>
                           <td className="px-5 py-3 text-slate-600">{retailer?.name || `User #${order.user_id}`}</td>
-                          <td className="px-5 py-3 text-slate-600">{distributor?.name || `User #${order.distributor_id}`}</td>
+                          <td className="px-5 py-3 text-slate-600">{distributor?.name || `Not assigned`}</td>
                           <td className="px-5 py-3 font-medium text-slate-800">Rs {Number(order.total_amount).toLocaleString('en-PK')}</td>
                           <td className="px-5 py-3">
                             <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ${statusBadge(order.status)}`}>

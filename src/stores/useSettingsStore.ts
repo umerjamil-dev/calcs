@@ -19,7 +19,7 @@ interface SettingsState {
   changingPassword: boolean
   fetchProfile: () => Promise<void>
   updateProfile: (data: Partial<UserProfile>) => Promise<boolean>
-  changePassword: (data: { current_password: string; password: string; password_confirmation: string }) => Promise<boolean>
+  changePassword: (data: { current_password: string; new_password: string; new_password_confirmation: string }) => Promise<boolean>
 }
 
 export const useSettingsStore = create<SettingsState>()((set, get) => ({
@@ -60,11 +60,11 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   },
 
   changePassword: async (data) => {
-    if (data.password !== data.password_confirmation) {
+    if (data.new_password !== data.new_password_confirmation) {
       toast.error('Password confirmation does not match')
       return false
     }
-    if (data.password.length < 6) {
+    if (data.new_password.length < 6) {
       toast.error('Password must be at least 6 characters')
       return false
     }

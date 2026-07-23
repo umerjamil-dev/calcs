@@ -31,6 +31,13 @@ export interface Order {
   order_date: string
   delivered_at: string | null
   notes: string
+  statement_slip?: string
+  customer_name?: string
+  customer_number?: string
+  customer_address?: string
+  driver_name?: string
+  driver_number?: string
+  expected_delivery?: string
   products: OrderProduct[]
 }
 

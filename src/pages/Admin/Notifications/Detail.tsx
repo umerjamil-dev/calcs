@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Bell } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
+import { Button } from '@/components/ui/button'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const formatDate = (dateStr: string) => {
@@ -12,13 +13,20 @@ const formatDate = (dateStr: string) => {
 const AdminNotificationDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { notifications, fetchNotifications } = useNotificationStore()
+  const { notifications, fetchNotifications, updateNotificationStatus, updating } = useNotificationStore()
+  const [newStatus, setNewStatus] = useState('')
 
   useEffect(() => {
     if (notifications.length === 0) fetchNotifications()
   }, [fetchNotifications, notifications.length])
 
   const notification = notifications.find((n) => n.id === Number(id))
+
+  const handleStatusChange = async () => {
+    if (!newStatus || !notification) return
+    const success = await updateNotificationStatus(notification.id, newStatus)
+    if (success) setNewStatus('')
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">

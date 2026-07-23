@@ -15,6 +15,7 @@ import {
   MessageCircleCheckIcon,
   LucideCreditCard,
   ReceiptPoundSterling,
+  Settings,
 } from 'lucide-react'
 import { logo } from '@/assets'
 import { cn } from '@/lib/utils'
@@ -109,6 +110,7 @@ const menuItems: MenuItem[] = [
   }, 
   { label: 'Complains', icon: <Bell size={18} />, path: '/admin/notifications' },
   { label: 'Profile', icon: <User size={18} />, path: '/admin/settings' },
+  // { label: 'Setting', icon: <Settings size={18} />, path: '/admin/user/settings' },
 ]
 
 export function AdminSidebar() {

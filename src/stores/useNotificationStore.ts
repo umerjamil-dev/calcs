@@ -17,12 +17,15 @@ export interface Notification {
 interface NotificationState {
   notifications: Notification[]
   loading: boolean
+  updating: boolean
   fetchNotifications: () => Promise<void>
+  updateNotificationStatus: (id: number, status: string) => Promise<boolean>
 }
 
 export const useNotificationStore = create<NotificationState>()((set) => ({
   notifications: [],
   loading: false,
+  updating: false,
 
   fetchNotifications: async () => {
     set({ loading: true })
@@ -34,6 +37,25 @@ export const useNotificationStore = create<NotificationState>()((set) => ({
       toast.error(err.response?.data?.message || 'Failed to fetch notifications')
     } finally {
       set({ loading: false })
+    }
+  },
+
+  updateNotificationStatus: async (id: number, status: string) => {
+    set({ updating: true })
+    try {
+      await api.put(`/retailer-complaints/${id}`, { status })
+      toast.success('Status updated successfully')
+      set((state) => ({
+        notifications: state.notifications.map((n) =>
+          n.id === id ? { ...n, status } : n
+        ),
+      }))
+      return true
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to update status')
+      return false
+    } finally {
+      set({ updating: false })
     }
   },
 }))

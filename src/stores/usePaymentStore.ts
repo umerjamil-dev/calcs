@@ -33,6 +33,7 @@ export interface Balance {
   distributor_id: number
   total_orders: number
   total_amount: string
+  payment_status: string
   total_payments: string
   balance: number
   user?: {
@@ -52,6 +53,7 @@ export interface DistributorBalance {
   total_orders: number
   total_earned: string
   total_received: string
+  payment_status: string
   total_pending: string
   distributor?: {
     id: number

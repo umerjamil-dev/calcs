@@ -19,7 +19,7 @@ const AdminSettings = () => {
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) return
-    const success = await changePassword({ current_password: currentPassword, password: newPassword, password_confirmation: confirmPassword })
+    const success = await changePassword({ current_password: currentPassword, new_password: newPassword, new_password_confirmation: confirmPassword })
     if (success) {
       setCurrentPassword('')
       setNewPassword('')
