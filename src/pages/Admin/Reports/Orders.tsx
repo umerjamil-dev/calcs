@@ -1,8 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
+import { useOrderStore } from '@/stores/useOrderStore'
+import { useProductStore } from '@/stores/useProductStore'
+import api from '@/lib/axios'
 
 const AdminOrdersReport = () => {
+  const { users, orders, fetchUsers, fetchOrders } = useOrderStore()
+  const { products, fetchProducts } = useProductStore()
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const [orderNumber, setOrderNumber] = useState('')
@@ -10,6 +15,47 @@ const AdminOrdersReport = () => {
   const [distributor, setDistributor] = useState('')
   const [status, setStatus] = useState('')
   const [product, setProduct] = useState('')
+  const [showSuggestions, setShowSuggestions] = useState(false)
+
+  useEffect(() => {
+    if (users.length === 0) fetchUsers()
+    if (products.length === 0) fetchProducts()
+    if (orders.length === 0) fetchOrders()
+  }, [fetchUsers, fetchProducts, fetchOrders, users.length, products.length, orders.length])
+
+  const retailers = users.filter((u) => u.role_id === 3)
+  const distributors = users.filter((u) => u.role_id === 2)
+
+  const filteredOrders = orderNumber
+    ? orders.filter((o) => o.order_number.toLowerCase().includes(orderNumber.toLowerCase()))
+    : []
+
+  const handleDownloadPDF = async () => {
+    try {
+      const params = new URLSearchParams()
+      if (fromDate) params.append('from_date', fromDate)
+      if (toDate) params.append('to_date', toDate)
+      if (orderNumber) params.append('order_number', orderNumber)
+      if (retailer) params.append('retailer_id', retailer)
+      if (distributor) params.append('distributor_id', distributor)
+      if (status) params.append('status', status)
+      if (product) params.append('product_id', product)
+
+      const response = await api.get(`/reports/orders/pdf?${params.toString()}`, {
+        responseType: 'blob',
+      })
+
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'orders-report.pdf')
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    } catch (error) {
+      console.error('Error downloading PDF:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -32,20 +78,53 @@ const AdminOrdersReport = () => {
                 <label className="mb-1 block text-xs font-medium text-slate-600">To Date</label>
                 <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main" />
               </div>
-              <div>
+              <div className="relative">
                 <label className="mb-1 block text-xs font-medium text-slate-600">Order Number</label>
-                <input type="text" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} placeholder="Enter order number" className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main" />
+                <input
+                  type="text"
+                  value={orderNumber}
+                  onChange={(e) => {
+                    setOrderNumber(e.target.value)
+                    setShowSuggestions(true)
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  placeholder="Enter order number"
+                  className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main"
+                />
+                {showSuggestions && filteredOrders.length > 0 && (
+                  <div className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-lg">
+                    {filteredOrders.map((o) => (
+                      <div
+                        key={o.id}
+                        onClick={() => {
+                          setOrderNumber(o.order_number)
+                          setShowSuggestions(false)
+                        }}
+                        className="cursor-pointer px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
+                      >
+                        {o.order_number}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600">Retailer</label>
                 <select value={retailer} onChange={(e) => setRetailer(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Retailers</option>
+                  {retailers.map((r) => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600">Distributor</label>
                 <select value={distributor} onChange={(e) => setDistributor(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Distributors</option>
+                  {distributors.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -64,11 +143,15 @@ const AdminOrdersReport = () => {
                 <label className="mb-1 block text-xs font-medium text-slate-600">Product</label>
                 <select value={product} onChange={(e) => setProduct(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Products</option>
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
                 </select>
               </div>
             </div>
             <div className="mt-4 flex gap-2">
               <Button className="h-9 cursor-pointer rounded-lg bg-primary-main px-6 text-sm font-medium text-white hover:bg-primary-main/90">Generate Report</Button>
+              <Button onClick={handleDownloadPDF} className="h-9 cursor-pointer rounded-lg border border-slate-200 bg-white px-6 text-sm font-medium text-slate-700 hover:bg-slate-50">Download PDF</Button>
             </div>
           </div>
         </main>

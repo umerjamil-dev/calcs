@@ -1,14 +1,49 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
+import { useOrderStore } from '@/stores/useOrderStore'
+import api from '@/lib/axios'
 
 const AdminPaymentsReport = () => {
+  const { users, fetchUsers } = useOrderStore()
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const [retailer, setRetailer] = useState('')
   const [distributor, setDistributor] = useState('')
   const [paymentStatus, setPaymentStatus] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('')
+
+  useEffect(() => {
+    if (users.length === 0) fetchUsers()
+  }, [fetchUsers, users.length])
+
+  const retailers = users.filter((u) => u.role_id === 3)
+  const distributors = users.filter((u) => u.role_id === 2)
+
+  const handleDownloadPDF = async () => {
+    try {
+      const params = new URLSearchParams()
+      if (fromDate) params.append('from_date', fromDate)
+      if (toDate) params.append('to_date', toDate)
+      if (retailer) params.append('retailer_id', retailer)
+      if (distributor) params.append('distributor_id', distributor)
+      if (status) params.append('status', status)
+
+      const response = await api.get(`/reports/payments/pdf?${params.toString()}`, {
+        responseType: 'blob',
+      })
+
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'payments-report.pdf')
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    } catch (error) {
+      console.error('Error downloading PDF:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -35,12 +70,18 @@ const AdminPaymentsReport = () => {
                 <label className="mb-1 block text-xs font-medium text-slate-600">Retailer</label>
                 <select value={retailer} onChange={(e) => setRetailer(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Retailers</option>
+                  {retailers.map((r) => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600">Distributor</label>
                 <select value={distributor} onChange={(e) => setDistributor(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Distributors</option>
+                  {distributors.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -62,6 +103,7 @@ const AdminPaymentsReport = () => {
             </div>
             <div className="mt-4 flex gap-2">
               <Button className="h-9 cursor-pointer rounded-lg bg-primary-main px-6 text-sm font-medium text-white hover:bg-primary-main/90">Generate Report</Button>
+              <Button onClick={handleDownloadPDF} className="h-9 cursor-pointer rounded-lg border border-slate-200 bg-white px-6 text-sm font-medium text-slate-700 hover:bg-slate-50">Download PDF</Button>
             </div>
           </div>
         </main>

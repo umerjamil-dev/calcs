@@ -122,7 +122,7 @@ export const usePaymentStore = create<PaymentState>()((set, get) => ({
     try {
       const res = await api.get('/admin/balances')
       const data = res.data.data || res.data
-      set({ balances: Array.isArray(data) ? data : [] })
+      set({ balances: Array.isArray(data) ? data : [] })                       
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to fetch balances')
     } finally {

@@ -1,8 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
+import { useOrderStore } from '@/stores/useOrderStore'
+import { useProductStore } from '@/stores/useProductStore'
+import api from '@/lib/axios'
 
 const AdminSalesReport = () => {
+  const { users, fetchUsers } = useOrderStore()
+  const { products, fetchProducts } = useProductStore()
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const [distributor, setDistributor] = useState('')
@@ -10,6 +15,39 @@ const AdminSalesReport = () => {
   const [product, setProduct] = useState('')
   const [paymentStatus, setPaymentStatus] = useState('')
   const [orderStatus, setOrderStatus] = useState('delivered')
+
+  useEffect(() => {
+    if (users.length === 0) fetchUsers()
+    if (products.length === 0) fetchProducts()
+  }, [fetchUsers, fetchProducts, users.length, products.length])
+
+  const retailers = users.filter((u) => u.role_id === 3)
+  const distributors = users.filter((u) => u.role_id === 2)
+
+  const handleDownloadPDF = async () => {
+    try {
+      const params = new URLSearchParams()
+      if (fromDate) params.append('from_date', fromDate)
+      if (toDate) params.append('to_date', toDate)
+      if (distributor) params.append('distributor_id', distributor)
+      if (retailer) params.append('retailer_id', retailer)
+      if (product) params.append('product_id', product)
+
+      const response = await api.get(`/reports/sales/pdf?${params.toString()}`, {
+        responseType: 'blob',
+      })
+
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'sales-report.pdf')
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    } catch (error) {
+      console.error('Error downloading PDF:', error)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -36,18 +74,27 @@ const AdminSalesReport = () => {
                 <label className="mb-1 block text-xs font-medium text-slate-600">Distributor</label>
                 <select value={distributor} onChange={(e) => setDistributor(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Distributors</option>
+                  {distributors.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600">Retailer</label>
                 <select value={retailer} onChange={(e) => setRetailer(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Retailers</option>
+                  {retailers.map((r) => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600">Product</label>
                 <select value={product} onChange={(e) => setProduct(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Products</option>
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -74,6 +121,7 @@ const AdminSalesReport = () => {
             </div>
             <div className="mt-4 flex gap-2">
               <Button className="h-9 cursor-pointer rounded-lg bg-primary-main px-6 text-sm font-medium text-white hover:bg-primary-main/90">Generate Report</Button>
+              <Button onClick={handleDownloadPDF} className="h-9 cursor-pointer rounded-lg border border-slate-200 bg-white px-6 text-sm font-medium text-slate-700 hover:bg-slate-50">Download PDF</Button>
             </div>
           </div>
         </main>
