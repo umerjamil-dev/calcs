@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Eye, ShoppingCart } from 'lucide-react'
+import { Eye, ShoppingCart, Search } from 'lucide-react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Pagination } from '@/components/Pagination'
 import { useOrderStore } from '@/stores/useOrderStore'
@@ -33,6 +33,7 @@ const formatDate = (dateStr: string) => {
 export function OrdersList({ title, statusFilter }: OrdersListProps) {
   const { orders, users, loading, fetchOrders, fetchUsers, getUserById } = useOrderStore()
   const [currentPage, setCurrentPage] = useState(1)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     fetchOrders()
@@ -47,8 +48,12 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
       )
     : orders
 
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
-  const paginatedOrders = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
+  const filteredBySearch = search
+    ? filtered.filter((o) => o.order_number.toLowerCase().includes(search.toLowerCase()))
+    : filtered
+
+  const totalPages = Math.ceil(filteredBySearch.length / ITEMS_PER_PAGE)
+  const paginatedOrders = filteredBySearch.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
  console.log(orders)
   return (
     <div className="min-h-screen bg-slate-50">
@@ -58,11 +63,26 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-3">
           <div className="mx-auto flex max-w-[1620px] items-center justify-between">
             <h1 className="text-lg font-semibold text-slate-800">{title}</h1>
-            <p className="text-sm text-slate-500">{filtered.length} orders</p>
+            <p className="text-sm text-slate-500">{filteredBySearch.length} orders</p>
           </div>
         </header>
 
         <main className="mx-auto max-w-8xl px-6 py-6">
+          <div className="mb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value)
+                  setCurrentPage(1)
+                }}
+                placeholder="Search by order number..."
+                className="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-800 outline-none focus:border-primary-main"
+              />
+            </div>
+          </div>
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
@@ -83,7 +103,7 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
                     <tr>
                       <td colSpan={8} className="px-5 py-8 text-center text-slate-500">Loading orders...</td>
                     </tr>
-                  ) : filtered.length === 0 ? (
+                  ) : filteredBySearch.length === 0 ? (
                     <tr>
                       <td colSpan={8} className="px-5 py-12 text-center">
                         <div className="flex flex-col items-center justify-center text-slate-400">
@@ -127,7 +147,7 @@ export function OrdersList({ title, statusFilter }: OrdersListProps) {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={setCurrentPage}
-              totalItems={filtered.length}
+              totalItems={filteredBySearch.length}
               itemsPerPage={ITEMS_PER_PAGE}
             />
           </div>

@@ -28,6 +28,16 @@ export interface Payment {
   }
 }
 
+export interface BalanceOrder {
+  id: number
+  order_number: string
+  total_amount: string | number
+  total_payments: string | number
+  status: string
+  order_date: string
+  payment_status: string
+}
+
 export interface Balance {
   user_id: number
   distributor_id: number
@@ -45,6 +55,7 @@ export interface Balance {
     id: number
     name: string
   }
+  orders: BalanceOrder[]
 }
 
 export interface DistributorBalance {
@@ -122,7 +133,56 @@ export const usePaymentStore = create<PaymentState>()((set, get) => ({
     try {
       const res = await api.get('/admin/balances')
       const data = res.data.data || res.data
-      set({ balances: Array.isArray(data) ? data : [] })                       
+      const rawOrders = Array.isArray(data) ? data : []
+
+      // Group raw per-order records into one row per retailer + distributor pair,
+      // keeping each order attached so the UI can expand into order-level detail
+      const grouped = new Map<string, Balance>()
+
+      rawOrders.forEach((order: any) => {
+        const key = `${order.user_id}-${order.distributor_id ?? 'none'}`
+        const amount = Number(order.total_amount) || 0
+        const paid = Number(order.total_payments) || 0
+
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            user_id: order.user_id,
+            distributor_id: order.distributor_id,
+            user: order.user,
+            distributor: order.distributor,
+            total_orders: 0,
+            total_amount: 0 as any,
+            total_payments: 0 as any,
+            balance: 0,
+            payment_status: 'unpaid',
+            orders: [],
+          })
+        }
+
+        const entry = grouped.get(key)!
+        entry.total_orders += 1
+        entry.total_amount = (Number(entry.total_amount) + amount) as any
+        entry.total_payments = (Number(entry.total_payments) + paid) as any
+        entry.orders.push({
+          id: order.id,
+          order_number: order.order_number,
+          total_amount: amount,
+          total_payments: paid,
+          status: order.status,
+          order_date: order.order_date,
+          payment_status: order.payment_status,
+        })
+      })
+
+      grouped.forEach((entry) => {
+        entry.balance = Number(entry.total_amount) - Number(entry.total_payments)
+        entry.payment_status =
+          entry.balance <= 0 ? 'paid' : Number(entry.total_payments) > 0 ? 'partial' : 'unpaid'
+        // newest order first within each group
+        entry.orders.sort((a, b) => new Date(b.order_date).getTime() - new Date(a.order_date).getTime())
+      })
+
+      set({ balances: Array.from(grouped.values()) })
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to fetch balances')
     } finally {

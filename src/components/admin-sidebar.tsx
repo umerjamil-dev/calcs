@@ -13,9 +13,7 @@ import {
   X,
   User,
   MessageCircleCheckIcon,
-  LucideCreditCard,
-  ReceiptPoundSterling,
-  Settings,
+  ClipboardMinus,
 } from 'lucide-react'
 import { logo } from '@/assets'
 import { cn } from '@/lib/utils'
@@ -98,13 +96,13 @@ const menuItems: MenuItem[] = [
   },
   {
     label: 'Reports',
-    icon: <ReceiptPoundSterling size={18} />,
+    icon: <ClipboardMinus size={18} />,
     children: [
       { label: 'Sales Report', path: '/admin/reports/sales' },
-{ label: 'Order Report', path: '/admin/reports/orders' },
-{ label: 'Payment Report', path: '/admin/reports/payments' },
-{ label: 'Retailer Report', path: '/admin/reports/retailers' },
-{ label: 'Distributor Report', path: '/admin/reports/distributors' },
+      { label: 'Order Report', path: '/admin/reports/orders' },
+      { label: 'Payment Report', path: '/admin/reports/payments' },
+      { label: 'Retailer Report', path: '/admin/reports/retailers' },
+      { label: 'Distributor Report', path: '/admin/reports/distributors' },
     ],
     
   }, 

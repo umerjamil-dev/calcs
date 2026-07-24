@@ -2,40 +2,37 @@ import { useEffect, useState } from 'react'
 import { AdminSidebar } from '@/components/admin-sidebar'
 import { Button } from '@/components/ui/button'
 import { useOrderStore } from '@/stores/useOrderStore'
+import { useReportStore } from '@/stores/useReportStore'
 import api from '@/lib/axios'
 
 const AdminDistributorsReport = () => {
   const { users, fetchUsers } = useOrderStore()
-  const [fromDate, setFromDate] = useState('')
-  const [toDate, setToDate] = useState('')
-  const [distributor, setDistributor] = useState('')
+  const { distributorsFilters, setDistributorsFilter, downloadDistributorsPDF } = useReportStore()
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [pdfLoading, setPdfLoading] = useState(false)
 
   useEffect(() => {
     if (users.length === 0) fetchUsers()
-  }, [fetchUsers, users.length])
+  }, [fetchUsers])
 
   const distributors = users.filter((u) => u.role_id === 2)
 
-  const handleDownloadPDF = async () => {
+  const generateReport = async () => {
+    setPdfLoading(true)
     try {
       const params = new URLSearchParams()
-      if (fromDate) params.append('from_date', fromDate)
-      if (toDate) params.append('to_date', toDate)
-      if (distributor) params.append('distributor_id', distributor)
-
-      const response = await api.get(`/reports/distributors/pdf?${params.toString()}`, {
-        responseType: 'blob',
-      })
-
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', 'distributors-report.pdf')
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-    } catch (error) {
-      console.error('Error downloading PDF:', error)
+      const f = distributorsFilters
+      if (f.fromDate) params.append('from_date', f.fromDate)
+      if (f.toDate) params.append('to_date', f.toDate)
+      if (f.distributor) params.append('distributor_id', f.distributor)
+      const res = await api.get(`/reports/distributor/pdf?${params.toString()}`, { responseType: 'blob' })
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
+      if (pdfUrl) window.URL.revokeObjectURL(pdfUrl)
+      setPdfUrl(url)
+    } catch {
+      setPdfUrl(null)
+    } finally {
+      setPdfLoading(false)
     }
   }
 
@@ -54,15 +51,15 @@ const AdminDistributorsReport = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600">From Date</label>
-                <input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main" />
+                <input type="date" value={distributorsFilters.fromDate} onChange={(e) => setDistributorsFilter('fromDate', e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main" />
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600">To Date</label>
-                <input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main" />
+                <input type="date" value={distributorsFilters.toDate} onChange={(e) => setDistributorsFilter('toDate', e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main" />
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600">Distributor</label>
-                <select value={distributor} onChange={(e) => setDistributor(e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
+                <select value={distributorsFilters.distributor} onChange={(e) => setDistributorsFilter('distributor', e.target.value)} className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary-main">
                   <option value="">All Distributors</option>
                   {distributors.map((d) => (
                     <option key={d.id} value={d.id}>{d.name}</option>
@@ -71,10 +68,16 @@ const AdminDistributorsReport = () => {
               </div>
             </div>
             <div className="mt-4 flex gap-2">
-              <Button className="h-9 cursor-pointer rounded-lg bg-primary-main px-6 text-sm font-medium text-white hover:bg-primary-main/90">Generate Report</Button>
-              <Button onClick={handleDownloadPDF} className="h-9 cursor-pointer rounded-lg border border-slate-200 bg-white px-6 text-sm font-medium text-slate-700 hover:bg-slate-50">Download PDF</Button>
+              <Button onClick={generateReport} disabled={pdfLoading} className="h-9 cursor-pointer rounded-lg bg-primary-main px-6 text-sm font-medium text-white hover:bg-primary-main/90 disabled:opacity-60">{pdfLoading ? 'Loading...' : 'Generate Report'}</Button>
+              <Button onClick={downloadDistributorsPDF} className="h-9 cursor-pointer rounded-lg border border-slate-200 bg-white px-6 text-sm font-medium text-slate-700 hover:bg-slate-50">Download PDF</Button>
             </div>
           </div>
+
+          {pdfUrl && (
+            <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <iframe src={pdfUrl} className="h-[80vh] w-full" title="Distributor Report PDF" />
+            </div>
+          )}
         </main>
       </div>
     </div>

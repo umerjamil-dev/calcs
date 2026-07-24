@@ -31,8 +31,6 @@ const AdminOrderDetail = () => {
   const { orders, users, loading, updating, fetchOrders, fetchUsers, getUserById, updateOrderStatus, assignDistributor } = useOrderStore()
   const [showAssign, setShowAssign] = useState(false)
   const [selectedDistributor, setSelectedDistributor] = useState('')
-  const [showStatusChange, setShowStatusChange] = useState(false)
-  const [newStatus, setNewStatus] = useState('')
   const [showSlipModal, setShowSlipModal] = useState(false)
 
   useEffect(() => {
@@ -79,7 +77,6 @@ const AdminOrderDetail = () => {
   const distributors = users.filter((u) => u.role_id === 2)
   const currentStep = statusSteps.indexOf(order.status)
   const isCancelled = order.status === 'cancelled'
-  const nextStatus = currentStep < statusSteps.length - 1 ? statusSteps[currentStep + 1] : null
 
   const handleAssign = async () => {
     if (!selectedDistributor) return
@@ -87,15 +84,6 @@ const AdminOrderDetail = () => {
     if (success) {
       setShowAssign(false)
       setSelectedDistributor('')
-    }
-  }
-
-  const handleStatusChange = async () => {
-    if (!newStatus) return
-    const success = await updateOrderStatus(order.id, newStatus)
-    if (success) {
-      setShowStatusChange(false)
-      setNewStatus('')
     }
   }
  
@@ -136,7 +124,15 @@ const AdminOrderDetail = () => {
                     <XCircle size={20} className="text-red-600" />
                     <div>
                       <p className="text-sm font-medium text-red-700">Order Cancelled</p>
-                      <p className="text-xs text-red-600">This order has been cancelled</p>
+                      <p className="text-xs text-red-600">{order.rejection_reason || 'This order has been cancelled'}</p>
+                    </div>
+                  </div>
+                ) : order.status === 'pending' && order.rejection_reason ? (
+                  <div className="flex items-center gap-3 rounded-lg bg-amber-50 p-4">
+                    <AlertCircle size={20} className="text-amber-600" />
+                    <div>
+                      <p className="text-sm font-medium text-amber-700">Rejection Reason</p>
+                      <p className="text-xs text-amber-600">{order.rejection_reason}</p>
                     </div>
                   </div>
                 ) : (
@@ -409,8 +405,7 @@ const AdminOrderDetail = () => {
                   {order.status === 'pending' && (
                     <Button
                       onClick={async () => {
-                        const success = await updateOrderStatus(order.id, 'accepted')
-                        if (success) setNewStatus('')
+                        await updateOrderStatus(order.id, 'accepted')
                       }}
                       disabled={updating}
                       className="h-9 w-full cursor-pointer rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"

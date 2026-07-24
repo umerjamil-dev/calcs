@@ -39,6 +39,7 @@ export interface Order {
   vehicle_number?: string
   driver_number?: string
   expected_delivery?: string
+  rejection_reason?: string
   products: OrderProduct[]
 }
 
